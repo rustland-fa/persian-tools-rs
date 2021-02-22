@@ -13,19 +13,19 @@ fn digits_convert(src: &str, from: Lang, to: Lang) -> String {
     src.chars()
         .map(|v| {
             let index = DIGITS[from as usize].iter().position(|&r| r == v);
-            if index.is_some() {
-                return DIGITS[to as usize][index.unwrap()];
+            if let Some(i) = index {
+                return DIGITS[to as usize][i];
             }
             return v;
         })
         .collect::<String>()
 }
 
-pub fn digits_tofa(src: &str) -> String {
+pub fn digits_to_fa(src: &str) -> String {
     digits_convert(src, Lang::En, Lang::Fa)
 }
 
-pub fn digits_toen(src: &str) -> String {
+pub fn digits_to_en(src: &str) -> String {
     digits_convert(src, Lang::Fa, Lang::En)
 }
 
