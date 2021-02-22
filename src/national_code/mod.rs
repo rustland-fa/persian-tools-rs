@@ -1,7 +1,14 @@
+use lazy_static::lazy_static;
+use regex::Regex;
+lazy_static! {
+    static ref DIGIT_NUM_WITH_LEN_TEN: Regex = Regex::new(r"^\d{10}$").unwrap();
+}
+
 pub fn verify_iranian_national_code<T: AsRef<str>>(code: T) -> bool {
-    let len = code.as_ref().len();
-    let code = format!("0000{}", code.as_ref());
-    let code = code.as_str()[(len + 4 - 10)..].to_string();
+    let code = code.as_ref().to_string();
+    if !DIGIT_NUM_WITH_LEN_TEN.is_match(&code) {
+        return false;
+    }
     if let Ok(num) = code.as_str()[3..].parse::<u32>() {
         if num == 0 {
             return false;
@@ -23,6 +30,14 @@ pub mod test {
     #[test]
     pub fn verify_iranian_national_code_test() {
         let result = verify_iranian_national_code("3020588391");
-        assert_eq!(result, true);
+        assert!(result);
+    }
+
+    #[test]
+    pub fn regex_test() {
+        assert!(DIGIT_NUM_WITH_LEN_TEN.is_match("1234567890"));
+        assert_eq!(DIGIT_NUM_WITH_LEN_TEN.is_match("123456789"), false);
+        assert_eq!(DIGIT_NUM_WITH_LEN_TEN.is_match("123456789a"), false);
+        assert_eq!(DIGIT_NUM_WITH_LEN_TEN.is_match("12345678911"), false);
     }
 }
