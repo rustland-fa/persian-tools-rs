@@ -12,8 +12,7 @@ pub enum Lang {
 fn digits_convert(src: &str, from: Lang, to: Lang) -> String {
     src.chars()
         .map(|v| {
-            let index = DIGITS[from as usize].iter().position(|&r| r == v);
-            if let Some(i) = index {
+            if let Some(i) = DIGITS[from as usize].iter().position(|&r| r == v) {
                 return DIGITS[to as usize][i];
             }
             return v;
@@ -34,14 +33,14 @@ pub mod test {
     use super::*;
 
     #[test]
-    pub fn digits_tofa_test() {
-        let res = digits_tofa("1a2b3c");
+    pub fn digits_to_fa_test() {
+        let res = digits_to_fa("1a2b3c");
         assert_eq!(res, "۱a۲b۳c");
     }
 
     #[test]
     pub fn digits_toen_test() {
-        let res = digits_toen("a۱b۲c۳d");
+        let res = digits_to_en("a۱b۲c۳d");
         assert_eq!(res, "a1b2c3d");
     }
 }
