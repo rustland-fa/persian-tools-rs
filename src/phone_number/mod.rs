@@ -11,6 +11,7 @@ pub mod tests {
         let result = is_valid_moblie_number("09398254166");
         assert_eq!(result, true);
     }
+
     #[test]
     pub fn get_prefix_mobile_number_test() {
         let result = get_prefix_mobile_number("09398254166").unwrap();
