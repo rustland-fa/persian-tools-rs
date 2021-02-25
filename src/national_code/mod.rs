@@ -1,12 +1,12 @@
 use lazy_static::lazy_static;
 use regex::Regex;
 lazy_static! {
-    static ref DIGIT_NUM_WITH_LEN_TEN: Regex = Regex::new(r"^\d{10}$").unwrap();
+    static ref NATIONAL_CODE_REGEX: Regex = Regex::new(r"^\d{10}$").unwrap();
 }
 
 pub fn verify_iranian_national_code<T: AsRef<str>>(code: T) -> bool {
     let code = code.as_ref().to_string();
-    if !DIGIT_NUM_WITH_LEN_TEN.is_match(&code) {
+    if !NATIONAL_CODE_REGEX.is_match(&code) {
         return false;
     }
     if let Ok(num) = code.as_str()[3..].parse::<u32>() {
@@ -19,8 +19,8 @@ pub fn verify_iranian_national_code<T: AsRef<str>>(code: T) -> bool {
     for i in 0..9 {
         sum += code.as_str()[i..i + 1].parse::<u32>().unwrap() * (10 - i) as u32;
     }
-    sum = sum % 11;
-    return (sum < 2 && last_index == sum) || (sum >= 2 && last_index == 11 - sum);
+    sum %= 11;
+    (sum < 2 && last_index == sum) || (sum >= 2 && last_index == 11 - sum)
 }
 
 #[cfg(test)]
@@ -35,9 +35,9 @@ pub mod test {
 
     #[test]
     pub fn regex_test() {
-        assert!(DIGIT_NUM_WITH_LEN_TEN.is_match("1234567890"));
-        assert_eq!(DIGIT_NUM_WITH_LEN_TEN.is_match("123456789"), false);
-        assert_eq!(DIGIT_NUM_WITH_LEN_TEN.is_match("123456789a"), false);
-        assert_eq!(DIGIT_NUM_WITH_LEN_TEN.is_match("12345678911"), false);
+        assert!(NATIONAL_CODE_REGEX.is_match("1234567890"));
+        assert_eq!(NATIONAL_CODE_REGEX.is_match("123456789"), false);
+        assert_eq!(NATIONAL_CODE_REGEX.is_match("123456789a"), false);
+        assert_eq!(NATIONAL_CODE_REGEX.is_match("12345678911"), false);
     }
 }

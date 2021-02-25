@@ -15,7 +15,7 @@ fn digits_convert(src: &str, from: Lang, to: Lang) -> String {
             if let Some(i) = DIGITS[from as usize].iter().position(|&r| r == v) {
                 return DIGITS[to as usize][i];
             }
-            return v;
+            v
         })
         .collect::<String>()
 }

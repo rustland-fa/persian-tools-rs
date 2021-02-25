@@ -41,7 +41,7 @@ pub fn verify_card_number<T: AsRef<str>>(number: T) -> bool {
             sub_digit
         };
     }
-    return sum % 10 == 0;
+    sum % 10 == 0
 }
 
 #[cfg(test)]
