@@ -1,19 +1,35 @@
-use lazy_static::lazy_static;
-use regex::Regex;
+pub mod landline;
+pub mod mobile;
 
-lazy_static! {
-    static ref PHONE_NUMBER_REGEX: Regex =
-        Regex::new(r"(?:[+|0{2}]?98)?(?:0)?(\d{3})+(\d{3})+(\d{4})$").unwrap();
-}
+#[cfg(test)]
+pub mod tests {
+    use super::landline::*;
+    use super::mobile::*;
 
-pub fn is_valid_phone_number<T: AsRef<str>>(number: T) -> bool {
-    PHONE_NUMBER_REGEX.is_match(number.as_ref())
-}
-
-pub fn get_prefix_phone_number<T: AsRef<str>>(number: T) -> Option<String> {
-    let capture = PHONE_NUMBER_REGEX.captures(number.as_ref());
-    if let Some(c) = capture {
-        return Some(c[0].to_string());
+    #[test]
+    pub fn is_valid_mobile_number_test() {
+        let result = is_valid_moblie_number("09398254166");
+        assert_eq!(result, true);
     }
-    None
+    #[test]
+    pub fn get_prefix_mobile_number_test() {
+        let result = get_prefix_mobile_number("09398254166").unwrap();
+        assert_eq!(&result, "939");
+        let result = get_prefix_mobile_number("+989398254166").unwrap();
+        assert_eq!(&result, "939");
+    }
+
+    #[test]
+    pub fn is_valid_landline_number_test() {
+        let result = is_valid_landline_number("03434144166");
+        assert_eq!(result, true);
+    }
+
+    #[test]
+    pub fn get_prefix_landline_number_test() {
+        let result = get_prefix_landline_number("03498254166").unwrap();
+        assert_eq!(&result, "34");
+        let result = get_prefix_landline_number("+983498254166").unwrap();
+        assert_eq!(&result, "34");
+    }
 }
