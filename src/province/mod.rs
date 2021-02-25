@@ -4,7 +4,7 @@ use city::*;
 use phf::phf_map;
 use std::fmt;
 
-pub static PROVINCES: phf::Map<&'static str, Province> = phf_map! {
+static PROVINCES: phf::Map<&'static str, Province> = phf_map! {
     "Alborz" => Province{
         prefix_phone : "",
         farsi_name : "",
