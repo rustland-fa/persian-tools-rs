@@ -1,8 +1,17 @@
 [package]
-name = "persian-tools-rs"
+name = "persian-tools"
 version = "0.1.0"
-authors = ["robatipoor <mahdi.robatipoor@gmail.com>"]
+authors = ["rustland-fa developers"]
 edition = "2018"
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/rustland-fa/persian-tools-rs"
+description = """
+A set of tools and helpers related to Persian language or in general, Iran!
+"""
+keywords = ["persian", "tool", "format", "tools", "iran"]
+categories = ["algorithms", "date-and-time", "encoding", "internationalization", "localization"]
+include = ["src/", "*.md"]
 
 [dependencies]
 lazy_static = "1.4.0"
