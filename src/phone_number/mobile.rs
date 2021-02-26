@@ -38,7 +38,7 @@ impl IranMobileOperator {
     }
 }
 
-pub fn is_valid_moblie_number<T: AsRef<str>>(number: T) -> bool {
+pub fn is_valid_mobile_number<T: AsRef<str>>(number: T) -> bool {
     MOBILE_NUMBER_REGEX.is_match(number.as_ref())
 }
 
