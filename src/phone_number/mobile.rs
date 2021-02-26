@@ -5,7 +5,6 @@ lazy_static! {
     static ref MOBILE_NUMBER_REGEX: Regex =
         Regex::new(r"(?:[+|0{2}]?98)?(?:0)?(\d{3})+(\d{3})+(\d{4})$").unwrap();
 }
-
 pub enum IranMobileOperator {
     MCI,
     IranCell,
@@ -16,7 +15,7 @@ pub enum IranMobileOperator {
 
 impl IranMobileOperator {
     // TODO
-    pub fn values(&self) -> Vec<&str> {
+    pub fn get_prefix_number(&self) -> Vec<&str> {
         use IranMobileOperator::*;
         match self {
             MCI => {
@@ -45,5 +44,5 @@ pub fn is_valid_mobile_number<T: AsRef<str>>(number: T) -> bool {
 pub fn get_prefix_mobile_number<T: AsRef<str>>(number: T) -> Option<String> {
     MOBILE_NUMBER_REGEX
         .captures(number.as_ref())
-        .map(|c| c[1].to_string())
+        .map(|c| format!("0{}", &c[1]))
 }
