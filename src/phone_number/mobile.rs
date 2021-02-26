@@ -3,7 +3,7 @@ use regex::Regex;
 
 lazy_static! {
     static ref MOBILE_NUMBER_REGEX: Regex =
-        Regex::new(r"(?:[+|0{2}]?98)?(?:0)?(\d{3})+(\d{3})+(\d{4})$").unwrap();
+        Regex::new(r"(\+98|0|98|0098)?(9\d{2})+(\d{3})+(\d{4})$").unwrap();
 }
 pub enum IranMobileOperator {
     MCI,
@@ -44,5 +44,5 @@ pub fn is_valid_mobile_number<T: AsRef<str>>(number: T) -> bool {
 pub fn get_prefix_mobile_number<T: AsRef<str>>(number: T) -> Option<String> {
     MOBILE_NUMBER_REGEX
         .captures(number.as_ref())
-        .map(|c| format!("0{}", &c[1]))
+        .map(|c| format!("0{}", &c[2]))
 }
