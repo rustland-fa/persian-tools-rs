@@ -1,3 +1,4 @@
+#[cfg(feature = "card_number")]
 pub mod card_number;
 pub mod date;
 pub mod digit;

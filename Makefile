@@ -1,5 +1,5 @@
 test:
-	@cargo test
+	@cargo test --all-features
 
 check:
 	@cargo +nightly fmt

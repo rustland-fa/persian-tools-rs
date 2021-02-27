@@ -19,3 +19,6 @@ regex = "1.4.3"
 phf = { version = "0.8", features = ["macros"] }
 #ptime = "0.1.1"
 #time = "0.2.25"
+
+[features]
+card_number = []
