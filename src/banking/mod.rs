@@ -5,7 +5,7 @@ trait Banking: AsRef<str> {
         let number = self.as_ref();
         let len = number.len();
         if len < 16
-            || number.chars().any(|c| !c.is_numeric())
+            || number.parse::<u64>().is_err()
             || number[1..10].parse::<u32>().unwrap() == 0
             || number[10..16].parse::<u32>().unwrap() == 0
         {
@@ -37,6 +37,7 @@ mod test {
 
     #[test]
     fn is_valid_card_number_test() {
+        assert!(!"9999999999999999".is_valid_bank_card_number());
         assert!(!"1234567890111213".is_valid_bank_card_number());
         assert!(!"abcdefghi0111213".is_valid_bank_card_number());
         assert!(!"6395991167965611".is_valid_bank_card_number());
