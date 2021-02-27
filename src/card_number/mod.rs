@@ -1,7 +1,5 @@
-trait CardVerification {
-    fn is_valid_card_number(&self) -> bool
-    where
-        Self: AsRef<str>
+trait CardVerification: AsRef<str> {
+    fn is_valid_card_number(&self) -> bool 
     {
         let number = self.as_ref();
         let len = number.len();
