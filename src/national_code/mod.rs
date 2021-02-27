@@ -5,7 +5,8 @@ lazy_static! {
     static ref NATIONAL_CODE_REGEX: Regex = Regex::new(r"^\d{10}$").unwrap();
 }
 
-pub fn verify_iranian_national_code<T: AsRef<str>>(code: T) -> bool {
+/// Takes a string and check if it's a valid Iranian national code or not.
+pub fn is_iranian_national_code_valid<T: AsRef<str>>(code: T) -> bool {
     let code = code.as_ref();
     if !NATIONAL_CODE_REGEX.is_match(code) {
         return false;
@@ -30,15 +31,15 @@ mod test {
 
     #[test]
     fn verify_iranian_national_code_test() {
-        let result = verify_iranian_national_code("3020588391");
-        assert!(result);
+        assert!(is_iranian_national_code_valid("3020588391"));
+        assert!(!is_iranian_national_code_valid("3020588392"));
     }
 
     #[test]
     fn regex_test() {
         assert!(NATIONAL_CODE_REGEX.is_match("1234567890"));
-        assert_eq!(NATIONAL_CODE_REGEX.is_match("123456789"), false);
-        assert_eq!(NATIONAL_CODE_REGEX.is_match("123456789a"), false);
-        assert_eq!(NATIONAL_CODE_REGEX.is_match("12345678911"), false);
+        assert!(!NATIONAL_CODE_REGEX.is_match("123456789"));
+        assert!(!NATIONAL_CODE_REGEX.is_match("123456789a"));
+        assert!(!NATIONAL_CODE_REGEX.is_match("12345678911"));
     }
 }
