@@ -30,7 +30,7 @@ mod tests {
         let result = is_valid_landline_number("03434144166");
         assert_eq!(result, true);
         let result = is_valid_landline_number("0343414412");
-        assert_eq!(result, false); //TODO FIX
+        assert_eq!(result, false);
     }
 
     #[test]
@@ -39,5 +39,11 @@ mod tests {
         assert_eq!(&result, "034");
         let result = get_prefix_landline_number("+983498254166").unwrap();
         assert_eq!(&result, "034");
+    }
+
+    #[test]
+    fn get_operator_name_from_mobile_number_test() {
+        let result = get_operator_name_from_mobile_number("09324343");
+        assert_eq!(result.unwrap(), IranMobileOperator::Taliya);
     }
 }
