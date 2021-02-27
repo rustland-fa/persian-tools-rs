@@ -21,4 +21,5 @@ phf = { version = "0.8", features = ["macros"] }
 #time = "0.2.25"
 
 [features]
+default = ["card_number"]
 card_number = []
