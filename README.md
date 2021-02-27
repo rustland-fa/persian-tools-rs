@@ -10,6 +10,7 @@ A set of helpers to sanitize, convert or transform information related to Persia
 | ------------------------------------------ | -------------- |
 | National Code Validator                    | ✅ Done        |
 | Numeric Conversions                        | ✅ Done        |
+| Persian Content Checks                     | ✅ Done        |
 | Phone Number                               | 🚧 In Progress |
 | Regions (Province & City)                  | 🚧 In Progress |
 | Date Conversion                            | 🛑 Not yet     |
