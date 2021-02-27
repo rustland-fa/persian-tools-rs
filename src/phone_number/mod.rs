@@ -3,8 +3,7 @@ pub mod mobile;
 
 #[cfg(test)]
 mod tests {
-    use super::landline::*;
-    use super::mobile::*;
+    use super::{landline::*, mobile::*};
 
     #[test]
     fn is_valid_mobile_number_test() {

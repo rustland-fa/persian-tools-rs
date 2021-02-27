@@ -8,8 +8,10 @@ A set of helpers to sanitize, convert or transform information related to Persia
 ## Features
 | Feature                                    | Status         |
 | ------------------------------------------ | -------------- |
-| National Code Helpers                      | ✅ Done        |
-| Numeric Conversions                        | 🚧 In Progress |
+| National Code Validator                    | ✅ Done        |
+| Numeric Conversions                        | ✅ Done        |
+| Persian Content Checks                     | ✅ Done        |
+| Numeric Ordinal Suffixes                   | ✅ Done        |
 | Phone Number                               | 🚧 In Progress |
 | Regions (Province & City)                  | 🚧 In Progress |
 | Date Conversion                            | 🛑 Not yet     |
