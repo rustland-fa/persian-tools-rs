@@ -1,5 +1,4 @@
-#[cfg(feature = "card_number")]
-pub mod card_number;
+pub mod banking;
 pub mod date;
 pub mod digit;
 pub mod national_code;
