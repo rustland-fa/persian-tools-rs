@@ -9,7 +9,7 @@ A set of helpers to sanitize, convert or transform information related to Persia
 | Feature                                    | Status         |
 | ------------------------------------------ | -------------- |
 | National Code Helpers                      | ✅ Done        |
-| Numeric Conversions                        | 🚧 In Progress |
+| Numeric Conversions                        | ✅ Done        |
 | Phone Number                               | 🚧 In Progress |
 | Regions (Province & City)                  | 🚧 In Progress |
 | Date Conversion                            | 🛑 Not yet     |

@@ -12,7 +12,7 @@ pub enum Lang {
 }
 
 /// Takes a string and which may contain some digits, and
-/// replaces the source language digits to the destination
+/// replaces the source language digits with the destination
 /// language digits.
 pub fn digits_convert<T: AsRef<str>>(src: T, from: Lang, to: Lang) -> String {
     let src = src.as_ref();
@@ -26,25 +26,25 @@ pub fn digits_convert<T: AsRef<str>>(src: T, from: Lang, to: Lang) -> String {
         .collect::<_>()
 }
 
-/// Takes a string which may contain English digits, and returns
+/// Takes a string that may contain English digits, and returns
 /// a string that represents the same digits but in Persian.
 pub fn digits_en_to_fa<T: AsRef<str>>(src: T) -> String {
     digits_convert(src, Lang::En, Lang::Fa)
 }
 
-/// Takes a string which may contain Persian digits, and returns
+/// Takes a string that may contain Persian digits, and returns
 /// a string that represents the same digits but in English.
 pub fn digits_fa_to_en<T: AsRef<str>>(src: T) -> String {
     digits_convert(src, Lang::Fa, Lang::En)
 }
 
-/// Takes a string which may contain Arabic digits, and returns
+/// Takes a string that may contain Arabic digits, and returns
 /// a string that represents the same digits but in Persian.
 pub fn digits_ar_to_fa<T: AsRef<str>>(src: T) -> String {
     digits_convert(src, Lang::Ar, Lang::Fa)
 }
 
-/// Takes a string which may contain Arabic digits, and returns
+/// Takes a string that may contain Arabic digits, and returns
 /// a string that represents the same digits but in English.
 pub fn digits_ar_to_en<T: AsRef<str>>(src: T) -> String {
     digits_convert(src, Lang::Ar, Lang::En)
