@@ -23,7 +23,7 @@ pub fn digits_convert<T: AsRef<str>>(src: T, from: Lang, to: Lang) -> String {
                 None => v,
             },
         )
-        .collect::<_>()
+        .collect()
 }
 
 /// Takes a string that may contain English digits, and returns
