@@ -6,3 +6,6 @@ pub mod number_suffix;
 pub mod persian_content;
 pub mod phone_number;
 pub mod province;
+
+pub type Result<T = ()> =
+    std::result::Result<T, Box<dyn std::error::Error + 'static + Send + Sync>>;

@@ -89,23 +89,28 @@ pub fn is_valid_mobile_number<T: AsRef<str>>(number: T) -> bool {
     MOBILE_NUMBER_REGEX.is_match(number.as_ref())
 }
 
-#[deprecated(note = "please dont use this")]
-pub fn get_prefix_mobile_number<T: AsRef<str>>(number: T) -> Option<String> {
-    MOBILE_NUMBER_REGEX
-        .captures(number.as_ref())
-        .map(|c| format!("0{}", &c[2]))
-}
+// #[deprecated(note = "please dont use this")]
+// pub fn get_prefix_mobile_number<T: AsRef<str>>(number: T) -> Option<String> {
+//    MOBILE_NUMBER_REGEX
+//        .captures(number.as_ref())
+//        .map(|c| format!("0{}", &c[2]))
+//}
 
-// TODO FIXME validate number and replace prefix number +98 or 98 to 0
 pub fn get_operator_name_from_mobile_number<T: AsRef<str>>(
     number: T,
-) -> Option<IranMobileOperator> {
-    let number = number.as_ref().to_string();
-    IRAN_MOBILE_OPERATORS.into_iter().find_map(|(k, v)| {
+) -> crate::Result<Option<IranMobileOperator>> {
+    let number = MOBILE_NUMBER_REGEX
+        .captures(number.as_ref())
+        .map(|c| format!("0{}", &number.as_ref()[c[1].len()..]));
+    if number.is_none() {
+        return Err("phone number invalid".into());
+    }
+    let number = number.unwrap();
+    Ok(IRAN_MOBILE_OPERATORS.into_iter().find_map(|(k, v)| {
         if v.iter().any(|x| x == &&number[..x.len()]) {
             Some((*k).into())
         } else {
             None
         }
-    })
+    }))
 }
