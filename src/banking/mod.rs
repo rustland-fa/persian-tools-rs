@@ -1,5 +1,5 @@
 /// Set of helpers for the banking system of Iran.
-trait Banking: AsRef<str> {
+pub trait Banking: AsRef<str> {
     /// Checks if the bank card number is valid or not.
     fn is_valid_bank_card_number(&self) -> bool {
         let number = self.as_ref();

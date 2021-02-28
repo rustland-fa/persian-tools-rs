@@ -6,7 +6,7 @@ pub enum Lang {
 }
 
 /// Set of helpers to manipulate Persian (or Arabic!) digits.
-trait Digit: AsRef<str> {
+pub trait Digit: AsRef<str> {
     const DIGITS: [[char; 10]; 3] = [
         ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'],
         ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
