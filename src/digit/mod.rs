@@ -13,7 +13,7 @@ trait Digit: AsRef<str> {
         ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'],
     ];
 
-    /// Takes a string and which may contain some digits, and
+    /// Takes a string that may contain some digits, and
     /// replaces the source language digits with the destination
     /// language digits.
     fn digits_convert(&self, from: Lang, to: Lang) -> String {
