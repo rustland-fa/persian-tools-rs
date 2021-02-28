@@ -5,7 +5,7 @@ lazy_static! {
     static ref NATIONAL_CODE_REGEX: Regex = Regex::new(r"^\d{10}$").unwrap();
 }
 
-trait NationalCode: AsRef<str> {
+pub trait NationalCode: AsRef<str> {
     /// Takes a string and check if it's a valid Iranian national code or not.
     fn is_valid_national_code(&self) -> bool {
         let code = self.as_ref();

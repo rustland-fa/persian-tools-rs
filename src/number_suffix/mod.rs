@@ -1,5 +1,5 @@
 /// Set of helpers to add ordinal suffixes to Persian numbers.
-trait NumberSuffix: AsRef<str> {
+pub trait NumberSuffix: AsRef<str> {
     /// Add ordinal suffix to numbers.
     /// For example, will convert Persian text of "Panj" to "Panjom"
     fn add_ordinal_suffix_short(&self) -> String {
