@@ -14,6 +14,7 @@ A set of helpers to sanitize, convert or transform information related to Persia
 | Numeric Ordinal Suffixes                   | ✅ Done        |
 | Phone Number                               | 🚧 In Progress |
 | Regions (Province & City)                  | 🚧 In Progress |
+| Bank-related Helper Functions              | 🚧 In Progress |
 | Date Conversion                            | 🛑 Not yet     |
 
 
