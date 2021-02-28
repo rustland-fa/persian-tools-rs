@@ -67,6 +67,7 @@ mod test {
         assert!(!"ok this is text with".is_persian_str());
         assert!(!"阴阳".is_persian_str());
         assert!(!"Hello".is_persian_str());
+        assert!("سلام 😛".is_persian_str());
     }
 
     #[test]
