@@ -2,7 +2,7 @@ use lazy_static::lazy_static;
 use regex::Regex;
 
 lazy_static! {
-    static ref PERSIAN_STR: Regex = Regex::new(r"^[\u0600-\u06FF]+$").unwrap();
+    static ref PERSIAN_STR: Regex = Regex::new(r"^[\u0600-\u06FF]|[[:punc:]]+$").unwrap();
     static ref HAS_PERSIAN_CHAR: Regex = Regex::new(r"[\u0600-\u06FF]").unwrap();
 }
 
@@ -16,32 +16,32 @@ pub trait PersianContent: AsRef<str> {
     /// Checks if a text is in Persian.
     fn is_persian_str(&self) -> bool {
         // First remove the non-alphabetic chars
-        let str = self
+        let string = self
             .as_ref()
             .chars()
             .into_iter()
             .filter(|c| c.is_alphabetic())
             .collect::<String>();
-        PERSIAN_STR.is_match(&str)
+        PERSIAN_STR.is_match(&string)
     }
 
     /// Calculates how much of the text is in Persian Alphabet.
     /// It doesn't count the numbers and other non-alphabetical chars like " « , ،
     fn persian_percentage(&self) -> u8 {
         // First remove the non-alphabetic chars
-        let str = self
+        let string = self
             .as_ref()
             .chars()
             .into_iter()
             .filter(|c| c.is_alphabetic())
             .collect::<String>();
-        let len = str.chars().count();
+        let len = string.chars().count();
 
         if len == 0 {
             return 100;
         }
 
-        let persian_chars = HAS_PERSIAN_CHAR.captures_iter(&str).count();
+        let persian_chars = HAS_PERSIAN_CHAR.captures_iter(&string).count();
         (persian_chars * 100 / len) as u8
     }
 }
@@ -66,6 +66,7 @@ mod test {
         assert!("گفت: «سلام»".is_persian_str());
         assert!(!"ok this is text with".is_persian_str());
         assert!(!"阴阳".is_persian_str());
+        assert!(!"Hello".is_persian_str());
     }
 
     #[test]
