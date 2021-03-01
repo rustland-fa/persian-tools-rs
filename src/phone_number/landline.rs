@@ -5,7 +5,7 @@ use crate::province::{IranProvince, PROVINCES};
 
 lazy_static! {
     static ref LANDLINE_NUMBER_REGEX: Regex =
-        Regex::new(r"(\+98|0|98|0098)?([1-9]{2})+(\d{8})$").unwrap();
+        Regex::new(r"^(\+98|0|98|0098)?([1-9]{2})(\d{8})$").unwrap();
 }
 /// trait helper for validate landnumber and more ...
 pub trait LandlineNumber: AsRef<str> {

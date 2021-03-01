@@ -3,7 +3,7 @@ use regex::Regex;
 
 lazy_static! {
     static ref MOBILE_NUMBER_REGEX: Regex =
-        Regex::new(r"(\+98|0|98|0098)?(9\d{2})+(\d{3})+(\d{4})$").unwrap();
+        Regex::new(r"^(\+98|0|98|0098)?(9\d{2})(\d{3})(\d{4})$").unwrap();
 }
 /// iran mobile operator
 // in future phf crate if support enums as key we must replace str with enum

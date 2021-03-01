@@ -17,9 +17,15 @@ mod tests {
     }
 
     #[test]
+    fn is_valid_mobile_number_test_3() {
+        assert!(!"+98939825416621121121122133313".is_valid_mobile_number())
+    }
+
+    #[test]
     fn is_valid_landline_number_test() {
         assert!("03434144188".is_valid_landline_number());
         assert!(!"0343414418".is_valid_landline_number());
+        assert!(!"034341441810000000000000000023323232".is_valid_landline_number());
     }
 
     #[test]
