@@ -7,18 +7,10 @@ mod tests {
     use crate::province::IranProvince;
 
     #[test]
-    fn is_valid_mobile_number_test_1() {
-        assert!("09398254166".is_valid_mobile_number())
-    }
-
-    #[test]
-    fn is_valid_mobile_number_test_2() {
-        assert!("+989398254166".is_valid_mobile_number())
-    }
-
-    #[test]
-    fn is_valid_mobile_number_test_3() {
-        assert!(!"+98939825416621121121122133313".is_valid_mobile_number())
+    fn is_valid_mobile_number_test() {
+        assert!("09398254166".is_valid_mobile_number());
+        assert!("+989398254166".is_valid_mobile_number());
+        assert!(!"+98939825416621121121122133313".is_valid_mobile_number());
     }
 
     #[test]
@@ -32,6 +24,7 @@ mod tests {
     fn get_prefix_landline_number_test() {
         assert_eq!("03498254166".get_prefix_landline_number().unwrap(), "034");
         assert_eq!("+983498254166".get_prefix_landline_number().unwrap(), "034");
+        assert!("+98".get_operator_name_from_mobile_number().is_err());
     }
 
     #[test]
@@ -50,6 +43,7 @@ mod tests {
                 .unwrap(),
             IranProvince::Tehran
         );
+        assert!("+98999999999".get_province_from_landline_number().is_err());
     }
 
     #[test]
@@ -75,5 +69,8 @@ mod tests {
                 .unwrap(),
             IranMobileOperator::MCI
         );
+        assert!("+98999999999"
+            .get_operator_name_from_mobile_number()
+            .is_err());
     }
 }

@@ -17,5 +17,6 @@ include = ["src/", "*.md"]
 lazy_static = "1.4.0"
 regex = "1.4.3"
 phf = { version = "0.8", features = ["macros"] }
+strum = { version = "0.20", features = ["derive"] }
 #ptime = "0.1.1"
 #time = "0.2.25"
