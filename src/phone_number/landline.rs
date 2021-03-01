@@ -20,10 +20,11 @@ pub trait LandlineNumber: AsRef<str> {
             .map(|c| format!("0{}", &c[2]))
             .ok_or_else(|| "invalid landline number".into())
     }
-    fn get_province_from_number(&self) -> crate::Result<Option<IranProvince>> {
+    // get province from landline number
+    fn get_province_from_landline_number(&self) -> crate::Result<Option<IranProvince>> {
         self.get_prefix_landline_number()
-            .and_then(|p| {
-                Ok(PROVINCES.into_iter().find_map(
+            .map(|p| {
+                PROVINCES.into_iter().find_map(
                     |(k, v)| {
                         if v.prefix_phone == p {
                             Some(k)
@@ -31,9 +32,9 @@ pub trait LandlineNumber: AsRef<str> {
                             None
                         }
                     },
-                ))
+                )
             })
-            .map(|p| p.map(|j| (*j).into()))
+            .map(|p| p.map(|&j| j.into()))
     }
 }
 

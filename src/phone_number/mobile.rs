@@ -105,11 +105,8 @@ pub trait MobileNumber: AsRef<str> {
     fn get_operator_name_from_mobile_number(&self) -> crate::Result<Option<IranMobileOperator>> {
         let number = MOBILE_NUMBER_REGEX
             .captures(self.as_ref())
-            .map(|c| format!("0{}", &self.as_ref()[c[1].len()..]));
-        if number.is_none() {
-            return Err("phone number invalid".into());
-        }
-        let number = number.unwrap();
+            .map(|c| format!("0{}", &self.as_ref()[c[1].len()..]))
+            .ok_or_else(|| "invalid mobile number")?;
         Ok(IRAN_MOBILE_OPERATORS.into_iter().find_map(|(k, v)| {
             if v.iter().any(|x| x == &&number[..x.len()]) {
                 Some((*k).into())
