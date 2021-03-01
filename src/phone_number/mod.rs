@@ -4,6 +4,7 @@ pub mod mobile;
 #[cfg(test)]
 mod tests {
     use super::{landline::*, mobile::*};
+    use crate::province::IranProvince;
 
     #[test]
     fn is_valid_mobile_number_test_1() {
@@ -25,6 +26,18 @@ mod tests {
     fn get_prefix_landline_number_test() {
         assert_eq!("03498254166".get_prefix_landline_number().unwrap(), "034");
         assert_eq!("+983498254166".get_prefix_landline_number().unwrap(), "034");
+    }
+
+    #[test]
+    fn get_province_from_landline_number_test() {
+        assert_eq!(
+            "03498254166".get_province_from_number().unwrap().unwrap(),
+            IranProvince::Kerman
+        );
+        assert_eq!(
+            "+982198254166".get_province_from_number().unwrap().unwrap(),
+            IranProvince::Tehran
+        );
     }
 
     #[test]
