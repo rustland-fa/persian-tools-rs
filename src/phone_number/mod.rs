@@ -4,46 +4,76 @@ pub mod mobile;
 #[cfg(test)]
 mod tests {
     use super::{landline::*, mobile::*};
+    use crate::province::IranProvince;
 
     #[test]
-    fn is_valid_mobile_number_test() {
-        let result = is_valid_mobile_number("09398254166");
-        assert_eq!(result, true);
+    fn is_valid_mobile_number_test_1() {
+        assert!("09398254166".is_valid_mobile_number())
     }
 
     #[test]
-    fn is_valid_mobile_number_test2() {
-        let result = is_valid_mobile_number("093982541");
-        assert_eq!(result, false);
+    fn is_valid_mobile_number_test_2() {
+        assert!("+989398254166".is_valid_mobile_number())
+    }
+
+    #[test]
+    fn is_valid_mobile_number_test_3() {
+        assert!(!"+98939825416621121121122133313".is_valid_mobile_number())
     }
 
     #[test]
     fn is_valid_landline_number_test() {
-        let result = is_valid_landline_number("03434144166");
-        assert_eq!(result, true);
-        let result = is_valid_landline_number("0343414412");
-        assert_eq!(result, false);
+        assert!("03434144188".is_valid_landline_number());
+        assert!(!"0343414418".is_valid_landline_number());
+        assert!(!"034341441810000000000000000023323232".is_valid_landline_number());
     }
 
     #[test]
     fn get_prefix_landline_number_test() {
-        let result = get_prefix_landline_number("03498254166").unwrap();
-        assert_eq!(&result, "034");
-        let result = get_prefix_landline_number("+983498254166").unwrap();
-        assert_eq!(&result, "034");
+        assert_eq!("03498254166".get_prefix_landline_number().unwrap(), "034");
+        assert_eq!("+983498254166".get_prefix_landline_number().unwrap(), "034");
+    }
+
+    #[test]
+    fn get_province_from_landline_number_test() {
+        assert_eq!(
+            "03498254166"
+                .get_province_from_landline_number()
+                .unwrap()
+                .unwrap(),
+            IranProvince::Kerman
+        );
+        assert_eq!(
+            "+982198254166"
+                .get_province_from_landline_number()
+                .unwrap()
+                .unwrap(),
+            IranProvince::Tehran
+        );
     }
 
     #[test]
     fn get_operator_name_from_mobile_number_test() {
-        let result = get_operator_name_from_mobile_number("09324343312");
-        assert_eq!(result.unwrap().unwrap(), IranMobileOperator::Taliya);
-        let result = get_operator_name_from_mobile_number("+989324343312");
-        assert_eq!(result.unwrap().unwrap(), IranMobileOperator::Taliya);
-        let result = get_operator_name_from_mobile_number("989324343312");
-        assert_eq!(result.unwrap().unwrap(), IranMobileOperator::Taliya);
-        let result = get_operator_name_from_mobile_number("09324343312");
-        assert_eq!(result.unwrap().unwrap(), IranMobileOperator::Taliya);
-        let result = get_operator_name_from_mobile_number("09124343312");
-        assert_eq!(result.unwrap().unwrap(), IranMobileOperator::MCI);
+        assert_eq!(
+            "09324341133"
+                .get_operator_name_from_mobile_number()
+                .unwrap()
+                .unwrap(),
+            IranMobileOperator::Taliya
+        );
+        assert_eq!(
+            "+989324341133"
+                .get_operator_name_from_mobile_number()
+                .unwrap()
+                .unwrap(),
+            IranMobileOperator::Taliya
+        );
+        assert_eq!(
+            "+989134341133"
+                .get_operator_name_from_mobile_number()
+                .unwrap()
+                .unwrap(),
+            IranMobileOperator::MCI
+        );
     }
 }

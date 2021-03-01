@@ -228,6 +228,45 @@ pub enum IranProvince {
     Zanjan,
 }
 
+impl From<&str> for IranProvince {
+    fn from(s: &str) -> Self {
+        match s.to_lowercase().as_str() {
+            "alborz" => IranProvince::Alborz,
+            "ardabil" => IranProvince::Ardabil,
+            "azerbaijaneast" => IranProvince::AzerbaijanEast,
+            "azerbaijanwest" => IranProvince::AzerbaijanWest,
+            "bushehr" => IranProvince::Bushehr,
+            "chaharmahaalandbakhtiari" => IranProvince::ChaharMahaalAndBakhtiari,
+            "fars" => IranProvince::Fars,
+            "gilan" => IranProvince::Gilan,
+            "golestan" => IranProvince::Golestan,
+            "hamadan" => IranProvince::Hamadan,
+            "hormozgan" => IranProvince::Hormozgan,
+            "ilam" => IranProvince::Ilam,
+            "isfahan" => IranProvince::Isfahan,
+            "kerman" => IranProvince::Kerman,
+            "kermanshah" => IranProvince::Kermanshah,
+            "khorasannorth" => IranProvince::KhorasanNorth,
+            "khorasanrazavi" => IranProvince::KhorasanRazavi,
+            "khorasansouth" => IranProvince::KhorasanSouth,
+            "khuzestan" => IranProvince::Khuzestan,
+            "kohgiluyehandboyerahmad" => IranProvince::KohgiluyehAndBoyerAhmad,
+            "kurdistan" => IranProvince::Kurdistan,
+            "lorestan" => IranProvince::Lorestan,
+            "markazi" => IranProvince::Markazi,
+            "mazandaran" => IranProvince::Mazandaran,
+            "qazvin" => IranProvince::Qazvin,
+            "qom" => IranProvince::Qom,
+            "semnan" => IranProvince::Semnan,
+            "sistanandbaluchestan" => IranProvince::SistanAndBaluchestan,
+            "tehran" => IranProvince::Tehran,
+            "yazd" => IranProvince::Yazd,
+            "zanjan" => IranProvince::Zanjan,
+            _ => panic!("invalid input"),
+        }
+    }
+}
+
 pub struct Province {
     pub prefix_phone: &'static str,
     pub farsi_name: &'static str,

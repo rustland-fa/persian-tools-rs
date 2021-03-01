@@ -12,7 +12,7 @@ A set of helpers to sanitize, convert or transform information related to Persia
 | Numeric Conversions                        | ✅ Done        |
 | Persian Content Checks                     | ✅ Done        |
 | Numeric Ordinal Suffixes                   | ✅ Done        |
-| Phone Number                               | 🚧 Done        |
+| Phone Number                               | ✅ Done        |
 | Regions (Province & City)                  | 🚧 In Progress |
 | Bank-related Helper Functions              | 🚧 In Progress |
 | Date Conversion                            | 🛑 Not yet     |

@@ -3,9 +3,10 @@ use regex::Regex;
 
 lazy_static! {
     static ref MOBILE_NUMBER_REGEX: Regex =
-        Regex::new(r"(\+98|0|98|0098)?(9\d{2})+(\d{3})+(\d{4})$").unwrap();
+        Regex::new(r"^(\+98|0|98|0098)?(9\d{2})(\d{3})(\d{4})$").unwrap();
 }
-
+/// iran mobile operator
+// in future phf crate if support enums as key we must replace str with enum
 pub static IRAN_MOBILE_OPERATORS: phf::Map<&'static str, &'static [&'static str]> = phf::phf_map! {
             "MCI" => {
                 &[
@@ -72,6 +73,7 @@ pub enum IranMobileOperator {
     ShatelMobile,
 }
 
+// TODO maybe use FromStr is better
 impl From<&str> for IranMobileOperator {
     fn from(t: &str) -> Self {
         match t.to_lowercase().as_str() {
@@ -80,37 +82,41 @@ impl From<&str> for IranMobileOperator {
             "telekish" => IranMobileOperator::TeleKish,
             "aptel" => IranMobileOperator::ApTel,
             "taliya" => IranMobileOperator::Taliya,
-            _ => unimplemented!("TODO ..."),
+            "azartel" => IranMobileOperator::Azartel,
+            "samantel" => IranMobileOperator::SamanTel,
+            "lotustel" => IranMobileOperator::LotusTel,
+            "ariantel" => IranMobileOperator::ArianTel,
+            "anarestan" => IranMobileOperator::Anarestan,
+            "irancell" => IranMobileOperator::Irancell,
+            "rightel" => IranMobileOperator::RightTel,
+            "shatelmobile" => IranMobileOperator::ShatelMobile,
+            _ => panic!("invalid input"),
         }
     }
 }
 
-pub fn is_valid_mobile_number<T: AsRef<str>>(number: T) -> bool {
-    MOBILE_NUMBER_REGEX.is_match(number.as_ref())
-}
-
-// #[deprecated(note = "please dont use this")]
-// pub fn get_prefix_mobile_number<T: AsRef<str>>(number: T) -> Option<String> {
-//    MOBILE_NUMBER_REGEX
-//        .captures(number.as_ref())
-//        .map(|c| format!("0{}", &c[2]))
-//}
-
-pub fn get_operator_name_from_mobile_number<T: AsRef<str>>(
-    number: T,
-) -> crate::Result<Option<IranMobileOperator>> {
-    let number = MOBILE_NUMBER_REGEX
-        .captures(number.as_ref())
-        .map(|c| format!("0{}", &number.as_ref()[c[1].len()..]));
-    if number.is_none() {
-        return Err("phone number invalid".into());
+/// trait helper for mobile number
+pub trait MobileNumber: AsRef<str> {
+    /// check mobile number is valid
+    fn is_valid_mobile_number(&self) -> bool {
+        MOBILE_NUMBER_REGEX.is_match(self.as_ref())
     }
-    let number = number.unwrap();
-    Ok(IRAN_MOBILE_OPERATORS.into_iter().find_map(|(k, v)| {
-        if v.iter().any(|x| x == &&number[..x.len()]) {
-            Some((*k).into())
-        } else {
-            None
-        }
-    }))
+    /// get operator name mobile number
+    fn get_operator_name_from_mobile_number(&self) -> crate::Result<Option<IranMobileOperator>> {
+        let number = MOBILE_NUMBER_REGEX
+            .captures(self.as_ref())
+            .map(|c| format!("0{}", &self.as_ref()[c[1].len()..]))
+            .ok_or_else(|| "invalid mobile number")?;
+        Ok(IRAN_MOBILE_OPERATORS.into_iter().find_map(|(k, v)| {
+            if v.iter().any(|x| x == &&number[..x.len()]) {
+                Some((*k).into())
+            } else {
+                None
+            }
+        }))
+    }
 }
+
+impl MobileNumber for String {}
+
+impl MobileNumber for str {}

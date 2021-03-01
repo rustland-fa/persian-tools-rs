@@ -4,3 +4,4 @@
 * Persian Content Checks
 * National Code Validator
 * Numeric Ordinal Suffixes
+* Phone Number Validator
