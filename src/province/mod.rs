@@ -3,6 +3,8 @@ pub mod city;
 use city::*;
 use phf::phf_map;
 use std::fmt;
+use strum::EnumString;
+
 // in future if phf support enum as key enum must be replace with string
 pub static PROVINCES: phf::Map<&'static str, Province> = phf_map! {
     "Alborz" => Province{
@@ -193,7 +195,7 @@ pub static PROVINCES: phf::Map<&'static str, Province> = phf_map! {
     },
 };
 
-#[derive(Debug, PartialEq, Eq, Hash)]
+#[derive(Debug, PartialEq, Eq, Hash, EnumString)]
 pub enum IranProvince {
     Alborz,
     Ardabil,
@@ -226,45 +228,6 @@ pub enum IranProvince {
     Tehran,
     Yazd,
     Zanjan,
-}
-
-impl From<&str> for IranProvince {
-    fn from(s: &str) -> Self {
-        match s.to_lowercase().as_str() {
-            "alborz" => IranProvince::Alborz,
-            "ardabil" => IranProvince::Ardabil,
-            "azerbaijaneast" => IranProvince::AzerbaijanEast,
-            "azerbaijanwest" => IranProvince::AzerbaijanWest,
-            "bushehr" => IranProvince::Bushehr,
-            "chaharmahaalandbakhtiari" => IranProvince::ChaharMahaalAndBakhtiari,
-            "fars" => IranProvince::Fars,
-            "gilan" => IranProvince::Gilan,
-            "golestan" => IranProvince::Golestan,
-            "hamadan" => IranProvince::Hamadan,
-            "hormozgan" => IranProvince::Hormozgan,
-            "ilam" => IranProvince::Ilam,
-            "isfahan" => IranProvince::Isfahan,
-            "kerman" => IranProvince::Kerman,
-            "kermanshah" => IranProvince::Kermanshah,
-            "khorasannorth" => IranProvince::KhorasanNorth,
-            "khorasanrazavi" => IranProvince::KhorasanRazavi,
-            "khorasansouth" => IranProvince::KhorasanSouth,
-            "khuzestan" => IranProvince::Khuzestan,
-            "kohgiluyehandboyerahmad" => IranProvince::KohgiluyehAndBoyerAhmad,
-            "kurdistan" => IranProvince::Kurdistan,
-            "lorestan" => IranProvince::Lorestan,
-            "markazi" => IranProvince::Markazi,
-            "mazandaran" => IranProvince::Mazandaran,
-            "qazvin" => IranProvince::Qazvin,
-            "qom" => IranProvince::Qom,
-            "semnan" => IranProvince::Semnan,
-            "sistanandbaluchestan" => IranProvince::SistanAndBaluchestan,
-            "tehran" => IranProvince::Tehran,
-            "yazd" => IranProvince::Yazd,
-            "zanjan" => IranProvince::Zanjan,
-            _ => panic!("invalid input"),
-        }
-    }
 }
 
 pub struct Province {
