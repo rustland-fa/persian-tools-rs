@@ -59,7 +59,7 @@ pub static IRAN_MOBILE_OPERATORS: phf::Map<&'static str, &'static [&'static str]
 
 };
 
-#[derive(Debug, PartialEq, EnumString)]
+#[derive(Debug, PartialEq, Eq, Hash, EnumString)]
 pub enum IranMobileOperator {
     MCI,
     MTCE,

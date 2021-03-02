@@ -195,7 +195,7 @@ pub static PROVINCES: phf::Map<&'static str, Province> = phf_map! {
     },
 };
 
-#[derive(Debug, PartialEq, EnumString)]
+#[derive(Debug, PartialEq, Eq, Hash, EnumString)]
 pub enum IranProvince {
     Alborz,
     Ardabil,
