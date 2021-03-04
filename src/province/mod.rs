@@ -2,8 +2,7 @@ pub mod city;
 
 use city::*;
 use phf::phf_map;
-use std::fmt;
-use strum::EnumString;
+use strum::{EnumString,Display};
 
 // in future if phf support enum as key enum must be replace with string
 pub static PROVINCES: phf::Map<&'static str, Province> = phf_map! {
@@ -195,7 +194,7 @@ pub static PROVINCES: phf::Map<&'static str, Province> = phf_map! {
     },
 };
 
-#[derive(Debug, PartialEq, Eq, Hash, EnumString)]
+#[derive(Debug, PartialEq, Eq, Hash, EnumString,Display)]
 pub enum IranProvince {
     Alborz,
     Ardabil,
@@ -235,11 +234,4 @@ pub struct Province {
     pub farsi_name: &'static str,
     pub latin_name: &'static str,
     pub cities: &'static phf::Map<&'static str, city::City>,
-}
-
-impl std::fmt::Display for IranProvince {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        //TODO ...
-        Ok(())
-    }
 }
