@@ -2,7 +2,7 @@ pub mod city;
 
 use city::*;
 use phf::phf_map;
-use strum::{EnumString,Display};
+use strum::{Display, EnumString};
 
 // in future if phf support enum as key enum must be replace with string
 pub static PROVINCES: phf::Map<&'static str, Province> = phf_map! {
@@ -194,7 +194,7 @@ pub static PROVINCES: phf::Map<&'static str, Province> = phf_map! {
     },
 };
 
-#[derive(Debug, PartialEq, Eq, Hash, EnumString,Display)]
+#[derive(Debug, PartialEq, Eq, Hash, EnumString, Display)]
 pub enum IranProvince {
     Alborz,
     Ardabil,
