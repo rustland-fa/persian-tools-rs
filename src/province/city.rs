@@ -342,15 +342,89 @@ pub enum SistanAndBaluchestan {
 }
 
 pub static TEHRAN_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
-    "" => City{
-        farsi_name : "",
-        latin_name : "",
+    "EslamShahr"=> City{
+        farsi_name : "اسلامشهر",
+        latin_name : "EslamShahr",
     },
-    // TODO ...
+    "Baharestan"=> City{
+        farsi_name : "بهارستان",
+        latin_name : "Baharestan",
+    },
+    "Pakdasht"=> City{
+        farsi_name : "پاکدشت",
+        latin_name : "Pakdasht",
+    },
+    "Pardis"=> City{
+        farsi_name : "پردیس",
+        latin_name : "Pardis",
+    },
+    "Pishva"=> City{
+        farsi_name : "پیشوا",
+        latin_name : "Pishva",
+    },
+    "Tehran"=> City{
+        farsi_name : "تهران",
+        latin_name : "Tehran",
+    },
+    "Damavand"=> City{
+        farsi_name : "دماوند",
+        latin_name : "Damavand",
+    },
+    "Robatkarim"=> City{
+        farsi_name : "رباط‌کریم",
+        latin_name : "Robatkarim",
+    },
+    "Rey"=> City{
+        farsi_name : "ری",
+        latin_name : "Rey",
+    },
+    "Shemiranat"=> City{
+        farsi_name : "شمیرانات",
+        latin_name : "Shemiranat",
+    },
+    "Shahryar"=> City{
+        farsi_name : "شهریار",
+        latin_name : "Shahryar",
+    },
+    "Ghods"=> City{
+        farsi_name : "قدس",
+        latin_name : "Ghods",
+    },
+    "Gharchak"=> City{
+        farsi_name : "قرچک",
+        latin_name : "Gharchak",
+    },
+    "Firozkoh"=> City{
+        farsi_name : "فیروزکوه",
+        latin_name : "Firozkoh",
+    },
+    "Malard"=> City{
+        farsi_name : "ملارد",
+        latin_name : "Malard",
+    },
+    "Varamin"=> City{
+        farsi_name : "ورامین",
+        latin_name : "Varamin",
+    },
 };
 #[derive(Debug, PartialEq, Eq, Hash, EnumString, Display)]
 pub enum Tehran {
-    // TODO add all cities
+    EslamShahr,
+    Baharestan,
+    Pakdasht,
+    Pardis,
+    Pishva,
+    Tehran,
+    Damavand,
+    Robatkarim,
+    Rey,
+    Shemiranat,
+    Shahryar,
+    Ghods,
+    Gharchak,
+    Firozkoh,
+    Malard,
+    Varamin,
 }
 
 pub static YAZD_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
