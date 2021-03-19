@@ -1,3 +1,5 @@
+use std::convert::TryFrom;
+
 /// Supported language variants.
 #[derive(Clone, Copy)]
 pub enum Lang {
@@ -90,7 +92,7 @@ pub static FACE_VALUE: phf::Map<&'static str, u16> = phf::phf_map! {
     "شانزده" => 16,
     "هفده" => 17,
     "هجده" => 18,
-    "نانزده" => 19,
+    "نوزده" => 19,
     "بیست" => 20,
     "سی" => 30,
     "چهل" => 40,
@@ -116,13 +118,17 @@ enum TokenType {
     FaceValue(u16),
 }
 
-fn parse(token: &str) -> Result<TokenType, &'static str> {
-    if let Some(v) = FACE_VALUE.get(token) {
-        Ok(TokenType::FaceValue(*v))
-    } else if let Some(m) = MULTIPLIERS.get(token) {
-        Ok(TokenType::Multiplier(*m))
-    } else {
-        Err("Unsupported token")
+impl TryFrom<&str> for TokenType {
+    type Error = &'static str;
+
+    fn try_from(token: &str) -> Result<Self, Self::Error> {
+        if let Some(v) = FACE_VALUE.get(token) {
+            Ok(TokenType::FaceValue(*v))
+        } else if let Some(m) = MULTIPLIERS.get(token) {
+            Ok(TokenType::Multiplier(*m))
+        } else {
+            Err("Unsupported token")
+        }
     }
 }
 
@@ -157,14 +163,12 @@ pub trait WordsToNumber: AsRef<str> {
         use std::convert::TryInto;
         const CANT_CONVERT: &'static str = "Given number does not fit in the provided`N`";
 
-        let src = self.as_ref().trim();
-        let tokens = src.split(" ").collect::<Vec<_>>();
-
-        let mut last: Option<TokenType> = None;
-        let parsed = tokens
+        let parsed = self
+            .as_ref()
+            .split(" ")
             .into_iter()
-            .filter(|t| (*t).ne("و"))
-            .map(parse)
+            .filter(|t| *t != "و")
+            .map(TokenType::try_from)
             .collect::<Result<Vec<_>, _>>()?;
 
         let mut final_value: N = num_traits::Zero::zero();
@@ -173,7 +177,8 @@ pub trait WordsToNumber: AsRef<str> {
         let check_add = |this: N, that: N| this.checked_add(&that).ok_or(CANT_CONVERT);
 
         let checked_mul = |this: N, that: N| this.checked_mul(&that).ok_or(CANT_CONVERT);
-
+        let mut last: Option<TokenType> = None;
+        
         for t in parsed {
             match t {
                 TokenType::FaceValue(v) => {
