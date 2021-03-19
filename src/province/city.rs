@@ -330,15 +330,129 @@ pub enum Semnan {
 }
 
 pub static SISTAN_AND_BALUCHESTAN_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
-    "" => City{
-        farsi_name : "",
-        latin_name : "",
+    "Khash" => City{
+        farsi_name : "خاش",
+        latin_name : "Khash",
     },
-    // TODO ...
+    "Zahedan" => City{
+        farsi_name : "زاهدان",
+        latin_name : "Zahedan",
+    },
+    "Zabol" => City{
+        farsi_name : "زابل",
+        latin_name : "Zabol",
+    },
+    "Iranshahr" => City{
+        farsi_name : "ایرانشهر",
+        latin_name : "Iranshahr",
+    },
+    "Chabahar" => City{
+        farsi_name : "چابهار",
+        latin_name : "Chabahar",
+    },
+    "Saravan" => City{
+        farsi_name : "سراوان",
+        latin_name : "Saravan",
+    },
+    "Nikshahr" => City{
+        farsi_name : "نیکشهر",
+        latin_name : "Nikshahr",
+    },
+    "Rask" => City{
+        farsi_name : "راسک",
+        latin_name : "Rask",
+    },
+    "Konarak" => City{
+        farsi_name : "کنارک",
+        latin_name : "Konarak",
+    },
+    "Zahak" => City{
+        farsi_name : "زهک",
+        latin_name : "Zahak",
+    },
+    "Delgan" => City{
+        farsi_name : "دلگان",
+        latin_name : "Delgan",
+    },
+    "SibVaSoran" => City{
+        farsi_name : "سیب و سوران",
+        latin_name : "SibVaSoran",
+    },
+    "Hirmand" => City{
+        farsi_name : "هیرمند",
+        latin_name : "Hirmand",
+    },
+    "Mehrestan" => City{
+        farsi_name : "مهرستان",
+        latin_name : "Mehrestan",
+    },
+    "Mirjaveh" => City{
+        farsi_name : "میرجاوه",
+        latin_name : "Mirjaveh",
+    },
+    "Ghasreghand" => City{
+        farsi_name : "قصرقند",
+        latin_name : "Ghasreghand",
+    },
+    "Nimroz" => City{
+        farsi_name : "نیمروز",
+        latin_name : "Nimroz",
+    },
+    "Haamon" => City{
+        farsi_name : "هامون",
+        latin_name : "Haamon",
+    },
+    "Fenoj" => City{
+        farsi_name : "فنوج",
+        latin_name : "Fenoj",
+    },
+    "Bempor" => City{
+        farsi_name : "بمپور",
+        latin_name : "Bempor",
+    },
+    "Taftan" => City{
+        farsi_name : "تفتان",
+        latin_name : "Taftan",
+    },
+    "Dashtyari" => City{
+        farsi_name : "دشتیاری",
+        latin_name : "Dashtyari",
+    },
+    "Sarbaz" => City{
+        farsi_name : "سرباز",
+        latin_name : "Sarbaz",
+    },
+    "Golshan" => City{
+        farsi_name : "گلشن",
+        latin_name : "Golshan",
+    },
 };
 #[derive(Debug, PartialEq, Eq, Hash, EnumString, Display)]
 pub enum SistanAndBaluchestan {
-    // TODO add all cities
+    Khash,
+    Zahedan,
+    Zabol,
+    Iranshahr,
+    Chabahar,
+    Saravan,
+    Nikshahr,
+    Rask,
+    Konarak,
+    Zahak,
+    Delgan,
+    SibVaSoran,
+    Hirmand,
+    Mehrestan,
+    Mirjaveh,
+    Ghasreghand,
+    Nimroz,
+    Haamon,
+    Fenoj,
+    Bempor,
+    Taftan,
+    Dashtyari,
+    Sarbaz,
+    Golshan,
 }
 
 pub static TEHRAN_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
