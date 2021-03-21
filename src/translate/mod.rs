@@ -86,7 +86,6 @@ pub trait Translate: AsRef<str> {
     const USER_AGENT_VALUE:&'static str = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36";
 
     fn translate(&self, target: Language) -> crate::Result<String> {
-
         let url = format!(
             "{url}&tl={target}&hl={target}&dt=t&text={text}",
             url = Self::BASE_URL,
@@ -119,11 +118,12 @@ impl Translate for str {}
 #[cfg(test)]
 mod translate {
     use super::{Language, Translate};
-    
+
     #[test]
     fn translate() {
         assert_eq!(
-            "سلام دنیا",r#"Hello, World"#.translate(Language::Farsi).unwrap()
+            "سلام دنیا",
+            r#"Hello, World"#.translate(Language::Farsi).unwrap()
         );
     }
 }
