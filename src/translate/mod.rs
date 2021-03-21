@@ -5,7 +5,7 @@ use std::str::FromStr;
 use strum::ToString;
 
 lazy_static! {
-    static ref DOUBLE_QUOT: Regex = Regex::new(r#""(.*?)""#).unwrap();
+    static ref DOUBLE_QUOTES: Regex = Regex::new(r#""(.*?)""#).unwrap();
 }
 
 /// Languages that can used for input and output of the [`translate`] function.
@@ -99,7 +99,7 @@ pub trait Translate: AsRef<str> {
             .text()
             .map_err(|e| e.to_string())
             .and_then(|s| {
-                if let Some(c) = DOUBLE_QUOT.captures_iter(&s).next() {
+                if let Some(c) = DOUBLE_QUOTES.captures_iter(&s).next() {
                     let content = c[0].trim();
                     let len = content.len();
                     Ok(content[1..len - 1].to_string())
