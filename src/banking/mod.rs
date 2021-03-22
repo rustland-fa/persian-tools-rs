@@ -1,3 +1,5 @@
+pub mod sheba;
+
 /// Set of helpers for the banking system of Iran.
 pub trait Banking: AsRef<str> {
     /// Checks if the bank card number is valid or not.

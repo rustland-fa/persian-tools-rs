@@ -1,4 +1,5 @@
 use std::convert::TryFrom;
+use crate::impl_trait_for_string_types;
 
 /// Supported language variants.
 #[derive(Clone, Copy)]
@@ -56,8 +57,7 @@ pub trait Digit: AsRef<str> {
     }
 }
 
-impl Digit for String {}
-impl Digit for str {}
+impl_trait_for_string_types!(Digit);
 
 /// The multipliers of the persian number system, up to a billion.
 pub static MULTIPLIERS: phf::Map<&'static str, u32> = phf::phf_map! {
@@ -161,11 +161,11 @@ pub trait WordsToNumber: AsRef<str> {
     ) -> Result<N, &'static str> {
         // TODO: ^^ maybe make a module-level Result alias.
         use std::convert::TryInto;
-        const CANT_CONVERT: &'static str = "Given number does not fit in the provided`N`";
+        const CANT_CONVERT: &str = "Given number does not fit in the provided`N`";
 
         let parsed = self
             .as_ref()
-            .split(" ")
+            .split(' ')
             .into_iter()
             .filter(|t| *t != "و")
             .map(TokenType::try_from)

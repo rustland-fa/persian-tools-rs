@@ -7,6 +7,7 @@ pub mod persian_content;
 pub mod phone_number;
 pub mod province;
 pub mod translate;
+pub(crate) mod utils;
 
 pub type Result<T = ()> =
     std::result::Result<T, Box<dyn std::error::Error + 'static + Send + Sync>>;
