@@ -1,5 +1,5 @@
-use std::convert::TryFrom;
 use crate::impl_trait_for_string_types;
+use std::convert::TryFrom;
 
 /// Supported language variants.
 #[derive(Clone, Copy)]

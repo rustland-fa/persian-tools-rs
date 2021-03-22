@@ -7,7 +7,6 @@ use strum::ToString;
 lazy_static! {
     static ref DOUBLE_QUOTES: Regex = Regex::new(r#""(.*?)""#).unwrap();
 }
-
 /// Languages that can used for input and output of the [`translate`] function.
 #[derive(Debug, Clone, PartialEq, Copy, Hash, ToString)]
 pub enum Language {

@@ -1,4 +1,10 @@
 use crate::impl_trait_for_string_types;
+use lazy_static::lazy_static;
+use regex::Regex;
+
+lazy_static! {
+    static ref SHEBA_CODE_PATTERN: Regex = Regex::new(r#"^IR[0-9]{24}$"#).unwrap();
+}
 
 #[derive(Debug)]
 pub struct ShebaInfo {
@@ -10,11 +16,35 @@ pub struct ShebaInfo {
 }
 pub trait ShebaNumber: AsRef<str> {
     fn is_valid_sheba_code(&self) -> bool {
-        false
+        if !SHEBA_CODE_PATTERN.is_match(self.as_ref()) {
+            return false;
+        }
+        //TODO ...
+        true
     }
 
     fn sheba_code_info(&self) -> Option<ShebaInfo> {
+        if !self.is_valid_sheba_code() {
+            return None;
+        }
+        //TODO ...
         None
+    }
+}
+
+#[cfg(test)]
+mod sheba_code {
+    use super::*;
+
+    #[test]
+    fn sheba_code_validate() {
+        assert_eq!(true, "IR123332132131432498654433".is_valid_sheba_code());
+        assert_eq!(false, "123332132131432498654433".is_valid_sheba_code());
+        assert_eq!(
+            false,
+            "IR1233321321314324986544323222".is_valid_sheba_code()
+        );
+        assert_eq!(false, "IR1233321222".is_valid_sheba_code());
     }
 }
 
