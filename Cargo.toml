@@ -19,3 +19,6 @@ regex = "1.4.3"
 phf = { version = "0.8", features = ["macros"] }
 strum = { version = "0.20", features = ["derive"] }
 num-traits = "0.2.14"
+reqwest = { version = "0.11.2", features = ["blocking"] }
+# persian-tools = { path = "." }
+
