@@ -178,7 +178,7 @@ pub trait WordsToNumber: AsRef<str> {
 
         let checked_mul = |this: N, that: N| this.checked_mul(&that).ok_or(CANT_CONVERT);
         let mut last: Option<TokenType> = None;
-        
+
         for t in parsed {
             match t {
                 TokenType::FaceValue(v) => {
