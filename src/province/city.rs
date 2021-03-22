@@ -90,15 +90,94 @@ pub enum Fars {
 }
 
 pub static GILAN_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
-    "" => City{
-        farsi_name : "",
-        latin_name : "",
+    "Rasht" => City{
+        farsi_name : "رشت",
+        latin_name : "Rasht",
     },
-    // TODO ...
+    "Langerood" => City{
+        farsi_name : "لنگرود",
+        latin_name : "Langerood",
+    },
+    "Lahijan" => City{
+        farsi_name : "لاهیجان",
+        latin_name : "Lahijan",
+    },
+    "Astara" => City{
+        farsi_name : "آستارا",
+        latin_name : "Astara",
+    },
+    "Shaft" => City{
+        farsi_name : "شفت",
+        latin_name : "Shaft",
+    },
+    "Masal" => City{
+        farsi_name : "ماسال",
+        latin_name : "Masal",
+    },
+    "Siahkal" => City{
+        farsi_name : "سیاهکل",
+        latin_name : "Siahkal",
+    },
+    "BandarAnzali" => City{
+        farsi_name : "بندرانزلی",
+        latin_name : "BandarAnzali",
+    },
+    "Talesh" => City{
+        farsi_name : "تالش",
+        latin_name : "Talesh",
+    },
+    "Rudsar" => City{
+        farsi_name : "رودسر",
+        latin_name : "Rudsar",
+    },
+    "Rudbar" => City{
+        farsi_name : "رودبار",
+        latin_name : "Rudbar",
+    },
+    "Fouman" => City{
+        farsi_name : "فومن",
+        latin_name : "Fouman",
+    },
+    "Amlash" => City{
+        farsi_name : "املش",
+        latin_name : "Amlash",
+    },
+    "Rezvanshahr" => City{
+        farsi_name : "رضوانشهر",
+        latin_name : "Rezvanshahr",
+    },
+    "SomeSara" => City{
+        farsi_name : "صومعه‌ سرا",
+        latin_name : "SomeSara",
+    },
+    "AstanehAshrafieh" => City{
+        farsi_name : "آستانه اشرفیه",
+        latin_name : "AstanehAshrafieh",
+    },
+    "Khomam" => City{
+        farsi_name : "خمام",
+        latin_name : "Khomam",
+    },
 };
 #[derive(Debug, PartialEq, Eq, Hash, EnumString, Display)]
 pub enum Gilan {
-    // TODO add all cities
+    Rasht,
+    Langerood,
+    Lahijan,
+    Astara,
+    Shaft,
+    Masal,
+    Siahkal,
+    BandarAnzali,
+    Talesh,
+    Rudsar,
+    Rudbar,
+    Fouman,
+    Amlash,
+    Rezvanshahr,
+    SomeSara,
+    AstanehAshrafieh,
+    Khomam,
 }
 
 pub static GOLESTAN_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
