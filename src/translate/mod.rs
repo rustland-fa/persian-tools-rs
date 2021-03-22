@@ -44,7 +44,7 @@ impl Language {
 
     /// Create a Language from &str like "en" or "French". Case Doesn't matter.
     pub fn from(s: &str) -> crate::Result<Self> {
-        return Self::from_str(s).map_err(|e| e.into());
+        Self::from_str(s).map_err(|e| e.into())
     }
 }
 
