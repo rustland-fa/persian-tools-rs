@@ -15,20 +15,40 @@ pub struct ShebaInfo {
     account_available: bool,
 }
 pub trait ShebaNumber: AsRef<str> {
-    fn is_valid_sheba_code(&self) -> bool {
-        if !SHEBA_CODE_PATTERN.is_match(self.as_ref()) {
-            return false;
+    fn is_valid_sheba_code(&self) -> crate::Result<bool> {
+        let sheba_code = self.as_ref();
+        if !SHEBA_CODE_PATTERN.is_match(sheba_code) {
+            return Ok(false);
         }
-        //TODO ...
-        true
+        let d1 = sheba_code.as_bytes()[0] - 65 + 10;
+        let d2 = sheba_code.as_bytes()[1] - 65 + 10;
+        let sub_num = format!("{}{}{}{}", &sheba_code[4..], d1, d2, &sheba_code[2..4]);
+        println!("****{}",sub_num);
+        Ok(Self::iso_7064_mod_97_10(&sub_num)? == 1)
     }
 
-    fn sheba_code_info(&self) -> Option<ShebaInfo> {
-        if !self.is_valid_sheba_code() {
-            return None;
+    fn sheba_code_info(&self) -> crate::Result<Option<ShebaInfo>> {
+        if !self.is_valid_sheba_code()? {
+            return Ok(None);
         }
         //TODO ...
-        None
+        Ok(None)
+    }
+
+    fn iso_7064_mod_97_10(code: &str) -> crate::Result<i32> {
+        let mut remainder = code.to_string();
+        let mut block = "";
+
+        loop {
+            let len = remainder.len();
+            if len <= 2 {
+                break;
+            }
+            let pos = if len > 9 { 9 } else { len };
+            block = &remainder[..pos];
+            remainder = format!("{}{}", block.parse::<i32>()? % 97, &remainder[pos..]);
+        }
+        Ok(remainder.parse::<i32>()? % 97)
     }
 }
 
@@ -38,13 +58,21 @@ mod sheba_code {
 
     #[test]
     fn sheba_code_validate() {
-        assert_eq!(true, "IR123332132131432498654433".is_valid_sheba_code());
-        assert_eq!(false, "123332132131432498654433".is_valid_sheba_code());
+        assert_eq!(
+            true,
+            "IR012345678901234567890123".is_valid_sheba_code().unwrap()
+        );
         assert_eq!(
             false,
-            "IR1233321321314324986544323222".is_valid_sheba_code()
+            "123332132131432498654433".is_valid_sheba_code().unwrap()
         );
-        assert_eq!(false, "IR1233321222".is_valid_sheba_code());
+        assert_eq!(
+            false,
+            "IR1233321321314324986544323222"
+                .is_valid_sheba_code()
+                .unwrap()
+        );
+        assert_eq!(false, "IR1233321222".is_valid_sheba_code().unwrap());
     }
 }
 
