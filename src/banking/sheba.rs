@@ -20,25 +20,21 @@ pub trait ShebaNumber: AsRef<str> {
         if !SHEBA_CODE_PATTERN.is_match(sheba_code) {
             return Ok(false);
         }
+        Ok(Self::iso_7064_mod_97_10(sheba_code)? == 1)
+    }
+
+    fn sheba_code_info(&self) -> crate::Result<Option<&ShebaInfo>> {
+        if !self.is_valid_sheba_code()? {
+            return Err("invalid sheba code".into());
+        }
+        Ok(SHEBA_CODE.get(&self.as_ref()[4..7]))
+    }
+
+    fn iso_7064_mod_97_10(sheba_code: &str) -> crate::Result<i32> {
         let d1 = sheba_code.as_bytes()[0] - 65 + 10;
         let d2 = sheba_code.as_bytes()[1] - 65 + 10;
-        let sub_num = format!("{}{}{}{}", &sheba_code[4..], d1, d2, &sheba_code[2..4]);
-        println!("****{}",sub_num);
-        Ok(Self::iso_7064_mod_97_10(&sub_num)? == 1)
-    }
-
-    fn sheba_code_info(&self) -> crate::Result<Option<ShebaInfo>> {
-        if !self.is_valid_sheba_code()? {
-            return Ok(None);
-        }
-        //TODO ...
-        Ok(None)
-    }
-
-    fn iso_7064_mod_97_10(code: &str) -> crate::Result<i32> {
-        let mut remainder = code.to_string();
+        let mut remainder = format!("{}{}{}{}", &sheba_code[4..], d1, d2, &sheba_code[2..4]);
         let mut block = "";
-
         loop {
             let len = remainder.len();
             if len <= 2 {
@@ -60,7 +56,7 @@ mod sheba_code {
     fn sheba_code_validate() {
         assert_eq!(
             true,
-            "IR012345678901234567890123".is_valid_sheba_code().unwrap()
+            "IR210180000000009190404878".is_valid_sheba_code().unwrap()
         );
         assert_eq!(
             false,
@@ -73,6 +69,11 @@ mod sheba_code {
                 .unwrap()
         );
         assert_eq!(false, "IR1233321222".is_valid_sheba_code().unwrap());
+    }
+
+    #[test]
+    fn sheba_code_info() {
+        assert_eq!(true,"IR210180000000009190404878".sheba_code_info().unwrap().is_some())
     }
 }
 
