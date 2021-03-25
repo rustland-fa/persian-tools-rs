@@ -34,7 +34,7 @@ pub trait ShebaNumber: AsRef<str> {
         let d1 = sheba_code.as_bytes()[0] - 65 + 10;
         let d2 = sheba_code.as_bytes()[1] - 65 + 10;
         let mut remainder = format!("{}{}{}{}", &sheba_code[4..], d1, d2, &sheba_code[2..4]);
-        let mut block = "";
+        let mut block;
         loop {
             let len = remainder.len();
             if len <= 2 {
@@ -73,7 +73,13 @@ mod sheba_code {
 
     #[test]
     fn sheba_code_info() {
-        assert_eq!(true,"IR210180000000009190404878".sheba_code_info().unwrap().is_some())
+        assert_eq!(
+            true,
+            "IR210180000000009190404878"
+                .sheba_code_info()
+                .unwrap()
+                .is_some()
+        )
     }
 }
 
