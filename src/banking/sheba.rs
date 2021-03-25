@@ -16,22 +16,25 @@ pub struct ShebaInfo {
 }
 
 pub trait ShebaNumber: AsRef<str> {
-    fn is_valid_sheba_code(&self) -> crate::Result<bool> {
+    fn is_valid_sheba_code(&self) -> bool {
+        match self.iso_7064_mod_97_10() {
+            Ok(i) => i == 1,
+            Err(_) => false,
+        }
+    }
+
+    fn sheba_code_info(&self) -> Option<&ShebaInfo> {
+        if !self.is_valid_sheba_code() {
+            return None;
+        }
+        SHEBA_CODE.get(&self.as_ref()[4..7])
+    }
+
+    fn iso_7064_mod_97_10(&self) -> crate::Result<i32> {
         let sheba_code = self.as_ref();
         if !SHEBA_CODE_PATTERN.is_match(sheba_code) {
-            return Ok(false);
-        }
-        Ok(Self::iso_7064_mod_97_10(sheba_code)? == 1)
-    }
-
-    fn sheba_code_info(&self) -> crate::Result<Option<&ShebaInfo>> {
-        if !self.is_valid_sheba_code()? {
             return Err("invalid sheba code".into());
         }
-        Ok(SHEBA_CODE.get(&self.as_ref()[4..7]))
-    }
-
-    fn iso_7064_mod_97_10(sheba_code: &str) -> crate::Result<i32> {
         let d1 = sheba_code.as_bytes()[0] - 65 + 10;
         let d2 = sheba_code.as_bytes()[1] - 65 + 10;
         let mut remainder = format!("{}{}{}{}", &sheba_code[4..], d1, d2, &sheba_code[2..4]);
@@ -55,31 +58,20 @@ mod sheba_code {
 
     #[test]
     fn sheba_code_validate() {
-        assert_eq!(
-            true,
-            "IR210180000000009190404878".is_valid_sheba_code().unwrap()
-        );
+        assert_eq!(true, "IR210180000000009190404878".is_valid_sheba_code());
+        assert_eq!(false, "123332132131432498654433".is_valid_sheba_code());
         assert_eq!(
             false,
-            "123332132131432498654433".is_valid_sheba_code().unwrap()
+            "IR1233321321314324986544323222".is_valid_sheba_code()
         );
-        assert_eq!(
-            false,
-            "IR1233321321314324986544323222"
-                .is_valid_sheba_code()
-                .unwrap()
-        );
-        assert_eq!(false, "IR1233321222".is_valid_sheba_code().unwrap());
+        assert_eq!(false, "IR1233321222".is_valid_sheba_code());
     }
 
     #[test]
     fn sheba_code_info() {
         assert_eq!(
             true,
-            "IR210180000000009190404878"
-                .sheba_code_info()
-                .unwrap()
-                .is_some()
+            "IR210180000000009190404878".sheba_code_info().is_some()
         )
     }
 }
