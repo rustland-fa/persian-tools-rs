@@ -1,6 +1,8 @@
 use lazy_static::lazy_static;
 use regex::Regex;
 
+use crate::impl_trait_for_string_types;
+
 lazy_static! {
     static ref PERSIAN_STR: Regex = Regex::new(r"^[\u0600-\u06FF]|[[:punc:]]+$").unwrap();
     static ref HAS_PERSIAN_CHAR: Regex = Regex::new(r"[\u0600-\u06FF]").unwrap();
@@ -46,8 +48,7 @@ pub trait PersianContent: AsRef<str> {
     }
 }
 
-impl PersianContent for String {}
-impl PersianContent for str {}
+impl_trait_for_string_types!(PersianContent);
 
 #[cfg(test)]
 mod test {

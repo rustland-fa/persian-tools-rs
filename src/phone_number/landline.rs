@@ -2,7 +2,10 @@ use lazy_static::lazy_static;
 use regex::Regex;
 use std::str::FromStr;
 
-use crate::province::{IranProvince, PROVINCES};
+use crate::{
+    impl_trait_for_string_types,
+    province::{IranProvince, PROVINCES},
+};
 
 lazy_static! {
     static ref LANDLINE_NUMBER_REGEX: Regex =
@@ -38,6 +41,4 @@ pub trait LandlineNumber: AsRef<str> {
     }
 }
 
-impl LandlineNumber for String {}
-
-impl LandlineNumber for str {}
+impl_trait_for_string_types!(LandlineNumber);

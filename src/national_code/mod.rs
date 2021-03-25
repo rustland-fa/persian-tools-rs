@@ -1,6 +1,8 @@
 use lazy_static::lazy_static;
 use regex::Regex;
 
+use crate::impl_trait_for_string_types;
+
 lazy_static! {
     static ref NATIONAL_CODE_REGEX: Regex = Regex::new(r"^\d{10}$").unwrap();
 }
@@ -27,8 +29,7 @@ pub trait NationalCode: AsRef<str> {
     }
 }
 
-impl NationalCode for String {}
-impl NationalCode for str {}
+impl_trait_for_string_types!(NationalCode);
 
 #[cfg(test)]
 mod test {
