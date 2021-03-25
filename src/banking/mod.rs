@@ -1,6 +1,7 @@
 use crate::impl_trait_for_string_types;
 
 pub mod sheba;
+pub mod sheba_table;
 
 /// Set of helpers for the banking system of Iran.
 pub trait Banking: AsRef<str> {
