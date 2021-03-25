@@ -14,6 +14,7 @@ pub struct ShebaInfo {
     code: &'static str,
     account_available: bool,
 }
+
 pub trait ShebaNumber: AsRef<str> {
     fn is_valid_sheba_code(&self) -> crate::Result<bool> {
         let sheba_code = self.as_ref();

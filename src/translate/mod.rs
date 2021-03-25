@@ -4,6 +4,8 @@ use reqwest::header::USER_AGENT;
 use std::str::FromStr;
 use strum::ToString;
 
+use crate::impl_trait_for_string_types;
+
 lazy_static! {
     static ref DOUBLE_QUOTES: Regex = Regex::new(r#""(.*?)""#).unwrap();
 }
@@ -99,9 +101,7 @@ pub trait Translate: AsRef<str> {
     }
 }
 
-impl Translate for String {}
-
-impl Translate for str {}
+impl_trait_for_string_types!(Translate);
 
 #[cfg(test)]
 mod translate {

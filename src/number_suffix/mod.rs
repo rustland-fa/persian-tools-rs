@@ -1,3 +1,5 @@
+use crate::impl_trait_for_string_types;
+
 /// Set of helpers to add ordinal suffixes to Persian numbers.
 pub trait NumberSuffix: AsRef<str> {
     /// Add ordinal suffix to numbers.
@@ -34,8 +36,7 @@ pub trait NumberSuffix: AsRef<str> {
     }
 }
 
-impl NumberSuffix for String {}
-impl NumberSuffix for str {}
+impl_trait_for_string_types!(NumberSuffix);
 
 #[cfg(test)]
 mod test {

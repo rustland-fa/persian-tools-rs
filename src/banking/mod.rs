@@ -1,3 +1,5 @@
+use crate::impl_trait_for_string_types;
+
 pub mod sheba;
 
 /// Set of helpers for the banking system of Iran.
@@ -30,8 +32,7 @@ pub trait Banking: AsRef<str> {
     }
 }
 
-impl Banking for String {}
-impl Banking for str {}
+impl_trait_for_string_types!(Banking);
 
 #[cfg(test)]
 mod test {

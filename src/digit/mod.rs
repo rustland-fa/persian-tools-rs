@@ -218,8 +218,7 @@ pub trait WordsToNumber: AsRef<str> {
     }
 }
 
-impl WordsToNumber for String {}
-impl WordsToNumber for str {}
+impl_trait_for_string_types!(WordsToNumber);
 
 #[cfg(test)]
 mod word_to_number {
