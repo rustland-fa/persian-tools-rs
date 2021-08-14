@@ -86,7 +86,6 @@ mod test {
         assert_eq!("".add_ordinal_suffix_long(), "");
     }
 
-
     #[test]
     fn remove_ordinal_suffix_test() {
         assert_eq!("چهل و سوم".remove_ordinal_suffix(), "چهل و سه");
