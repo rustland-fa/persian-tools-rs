@@ -1,4 +1,13 @@
 use crate::impl_trait_for_string_types;
+use lazy_static::lazy_static;
+use regex::Regex;
+
+lazy_static! {
+    static ref ORDINAL_SUFFIX_REGEX_1: Regex = Regex::new(r"(ین)$").unwrap();
+    static ref ORDINAL_SUFFIX_REGEX_2: Regex = Regex::new(r"(ام|اُم|ا|اُ)$").unwrap();
+    // U+200C is Zero-width non-joiner
+    static ref SPACE_REGEX: Regex = Regex::new(r"(\u{200c}|\s)$").unwrap();
+}
 
 /// Set of helpers to add ordinal suffixes to Persian numbers.
 pub trait NumberSuffix: AsRef<str> {
@@ -30,6 +39,23 @@ pub trait NumberSuffix: AsRef<str> {
         if !number.is_empty() {
             number = number.add_ordinal_suffix_short();
             number.push_str("ین");
+        }
+
+        number
+    }
+
+    fn remove_ordinal_suffix(&self) -> String {
+        let mut number = self.as_ref().to_string();
+        if !number.is_empty() {
+            number = ORDINAL_SUFFIX_REGEX_1.replace_all(&number, "").to_string();
+            number = ORDINAL_SUFFIX_REGEX_2.replace_all(&number, "").to_string();
+            if number.ends_with("سوم") {
+                number = str::replace(&number, "سوم", "");
+                number.push_str("سه");
+            } else if number.ends_with("م") {
+                number.pop();
+            }
+            number = SPACE_REGEX.replace_all(&number, "").to_string();
         }
 
         number
