@@ -85,4 +85,18 @@ mod test {
         assert_eq!("یک".add_ordinal_suffix_long(), "یکمین");
         assert_eq!("".add_ordinal_suffix_long(), "");
     }
+
+
+    #[test]
+    fn remove_ordinal_suffix_test() {
+        assert_eq!("چهل و سوم".remove_ordinal_suffix(), "چهل و سه");
+        assert_eq!("چهل و سومین".remove_ordinal_suffix(), "چهل و سه");
+        assert_eq!("چهل و پنجم".remove_ordinal_suffix(), "چهل و پنج");
+        assert_eq!("چهل و پنجمین".remove_ordinal_suffix(), "چهل و پنج");
+        assert_eq!("سی‌اُم".remove_ordinal_suffix(), "سی");
+        assert_eq!("سی‌اُمین".remove_ordinal_suffix(), "سی");
+        assert_eq!("یکم".remove_ordinal_suffix(), "یک");
+        assert_eq!("یکمین".remove_ordinal_suffix(), "یک");
+        assert_eq!("".remove_ordinal_suffix(), "");
+    }
 }
