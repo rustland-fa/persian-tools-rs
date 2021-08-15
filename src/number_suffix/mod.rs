@@ -50,9 +50,8 @@ pub trait NumberSuffix: AsRef<str> {
             number = ORDINAL_SUFFIX_REGEX_1.replace_all(&number, "").to_string();
             number = ORDINAL_SUFFIX_REGEX_2.replace_all(&number, "").to_string();
             if number.ends_with("سوم") {
-                number = str::replace(&number, "سوم", "");
-                number.push_str("سه");
-            } else if number.ends_with("م") {
+                number = str::replace(&number, "سوم", "سه");
+            } else if number.ends_with('م') {
                 number.pop();
             }
             number = SPACE_REGEX.replace_all(&number, "").to_string();
