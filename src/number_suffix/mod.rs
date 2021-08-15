@@ -48,9 +48,11 @@ pub trait NumberSuffix: AsRef<str> {
         if !number.is_empty() {
             number = ORDINAL_SUFFIX_REGEX.replace_all(&number, "").to_string();
             if number.ends_with("سوم") {
-                number = str::replace(&number, "سوم", "سه");
+                number = number.replace("سوم", "سه");
             } else if number.ends_with('م') {
                 number.pop();
+            } else if number.eq("اول") {
+                number = "یک".to_string();
             }
             number = SPACE_REGEX.replace_all(&number, "").to_string();
         }
@@ -93,6 +95,8 @@ mod test {
         assert_eq!("سی‌اُمین".remove_ordinal_suffix(), "سی");
         assert_eq!("یکم".remove_ordinal_suffix(), "یک");
         assert_eq!("یکمین".remove_ordinal_suffix(), "یک");
+        assert_eq!("اول".remove_ordinal_suffix(), "یک");
+        assert_eq!("اولین".remove_ordinal_suffix(), "یک");
         assert_eq!("".remove_ordinal_suffix(), "");
     }
 }
