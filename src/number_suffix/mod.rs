@@ -3,8 +3,7 @@ use lazy_static::lazy_static;
 use regex::Regex;
 
 lazy_static! {
-    static ref ORDINAL_SUFFIX_REGEX_1: Regex = Regex::new(r"(ین)$").unwrap();
-    static ref ORDINAL_SUFFIX_REGEX_2: Regex = Regex::new(r"(ام|اُم|ا|اُ)$").unwrap();
+    static ref ORDINAL_SUFFIX_REGEX: Regex = Regex::new(r"(ام|اُم|ا|اُ|امین|اُمین|ین)$").unwrap();
     // U+200C is Zero-width non-joiner
     static ref SPACE_REGEX: Regex = Regex::new(r"(\u{200c}|\s)$").unwrap();
 }
@@ -47,8 +46,7 @@ pub trait NumberSuffix: AsRef<str> {
     fn remove_ordinal_suffix(&self) -> String {
         let mut number = self.as_ref().to_string();
         if !number.is_empty() {
-            number = ORDINAL_SUFFIX_REGEX_1.replace_all(&number, "").to_string();
-            number = ORDINAL_SUFFIX_REGEX_2.replace_all(&number, "").to_string();
+            number = ORDINAL_SUFFIX_REGEX.replace_all(&number, "").to_string();
             if number.ends_with("سوم") {
                 number = str::replace(&number, "سوم", "سه");
             } else if number.ends_with('م') {
