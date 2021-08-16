@@ -1,4 +1,12 @@
 use crate::impl_trait_for_string_types;
+use lazy_static::lazy_static;
+use regex::Regex;
+
+lazy_static! {
+    static ref ORDINAL_SUFFIX_REGEX: Regex = Regex::new(r"(ام|اُم|ا|اُ|امین|اُمین|ین)$").unwrap();
+    // U+200C is Zero-width non-joiner
+    static ref SPACE_REGEX: Regex = Regex::new(r"(\u{200c}|\s)$").unwrap();
+}
 
 /// Set of helpers to add ordinal suffixes to Persian numbers.
 pub trait NumberSuffix: AsRef<str> {
@@ -34,6 +42,23 @@ pub trait NumberSuffix: AsRef<str> {
 
         number
     }
+
+    fn remove_ordinal_suffix(&self) -> String {
+        let mut number = self.as_ref().to_string();
+        if !number.is_empty() {
+            number = ORDINAL_SUFFIX_REGEX.replace_all(&number, "").to_string();
+            if number.ends_with("سوم") {
+                number = number.replace("سوم", "سه");
+            } else if number.ends_with('م') {
+                number.pop();
+            } else if number.eq("اول") {
+                number = "یک".to_string();
+            }
+            number = SPACE_REGEX.replace_all(&number, "").to_string();
+        }
+
+        number
+    }
 }
 
 impl_trait_for_string_types!(NumberSuffix);
@@ -58,5 +83,20 @@ mod test {
         assert_eq!("سی".add_ordinal_suffix_long(), "سی‌اُمین");
         assert_eq!("یک".add_ordinal_suffix_long(), "یکمین");
         assert_eq!("".add_ordinal_suffix_long(), "");
+    }
+
+    #[test]
+    fn remove_ordinal_suffix_test() {
+        assert_eq!("چهل و سوم".remove_ordinal_suffix(), "چهل و سه");
+        assert_eq!("چهل و سومین".remove_ordinal_suffix(), "چهل و سه");
+        assert_eq!("چهل و پنجم".remove_ordinal_suffix(), "چهل و پنج");
+        assert_eq!("چهل و پنجمین".remove_ordinal_suffix(), "چهل و پنج");
+        assert_eq!("سی‌اُم".remove_ordinal_suffix(), "سی");
+        assert_eq!("سی‌اُمین".remove_ordinal_suffix(), "سی");
+        assert_eq!("یکم".remove_ordinal_suffix(), "یک");
+        assert_eq!("یکمین".remove_ordinal_suffix(), "یک");
+        assert_eq!("اول".remove_ordinal_suffix(), "یک");
+        assert_eq!("اولین".remove_ordinal_suffix(), "یک");
+        assert_eq!("".remove_ordinal_suffix(), "");
     }
 }
