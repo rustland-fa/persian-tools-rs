@@ -1,5 +1,7 @@
+use crate::banking::bank_codes_table::BANK_CODE_TABLE;
 use crate::impl_trait_for_string_types;
 
+pub mod bank_codes_table;
 pub mod sheba;
 pub mod sheba_table;
 
@@ -31,6 +33,15 @@ pub trait Banking: AsRef<str> {
         }
         sum % 10 == 0
     }
+
+    /// Get the bank name from card number.
+    fn get_bank_name_from_card_number(&self) -> String {
+        let number = self.as_ref();
+        if number.is_valid_bank_card_number() {
+            return BANK_CODE_TABLE[&number[0..6]].name.to_string();
+        }
+        number.to_string()
+    }
 }
 
 impl_trait_for_string_types!(Banking);
@@ -51,5 +62,29 @@ mod test {
         let string = "6395991167965615".to_string();
         assert!(string.is_valid_bank_card_number());
         assert!(Banking::is_valid_bank_card_number(&string));
+    }
+
+    #[test]
+    fn get_bank_name_from_card_number_test() {
+        assert_eq!(
+            "بانک قوامین",
+            "6395991167965615".get_bank_name_from_card_number()
+        );
+        assert_eq!(
+            "بانک کشاورزی",
+            "6037701689095443".get_bank_name_from_card_number()
+        );
+        assert_eq!(
+            "بانک سامان",
+            "6219861034529007".get_bank_name_from_card_number()
+        );
+        assert_eq!("", "".get_bank_name_from_card_number());
+
+        let string = "6395991167965615".to_string();
+        assert_eq!("بانک قوامین", string.get_bank_name_from_card_number());
+        assert_eq!(
+            "بانک قوامین",
+            Banking::get_bank_name_from_card_number(&string)
+        );
     }
 }
