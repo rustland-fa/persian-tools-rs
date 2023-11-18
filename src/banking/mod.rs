@@ -38,7 +38,10 @@ pub trait Banking: AsRef<str> {
     fn get_bank_name_from_card_number(&self) -> String {
         let number = self.as_ref();
         if number.is_valid_bank_card_number() {
-            return BANK_CODE_TABLE[&number[0..6]].name.to_string();
+            return BANK_CODE_TABLE
+                .get_bank_name_from_code(&number[0..6])
+                .unwrap()
+                .to_owned(); // its ok to unwrap because the card is valid
         }
         number.to_string()
     }

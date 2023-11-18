@@ -22,7 +22,7 @@ pub trait LandlineNumber: AsRef<str> {
     /// Get three-digit prefix of a landline number.
     fn get_prefix_landline_number(&self) -> crate::Result<String> {
         LANDLINE_NUMBER_REGEX
-            .captures(&self.as_ref())
+            .captures(self.as_ref())
             .map(|c| format!("0{}", &c[2]))
             .ok_or_else(|| "Invalid landline number".into())
     }
@@ -30,7 +30,7 @@ pub trait LandlineNumber: AsRef<str> {
     /// Get province of the landline number.
     fn get_province_from_landline_number(&self) -> crate::Result<Option<IranProvince>> {
         self.get_prefix_landline_number().map(|p| {
-            PROVINCES.into_iter().find_map(|(k, v)| {
+            PROVINCES.iter().find_map(|(k, v)| {
                 if v.prefix_phone == p {
                     Some(IranProvince::from_str(k).unwrap())
                 } else {

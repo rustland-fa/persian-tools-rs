@@ -6,6 +6,7 @@ pub mod number_suffix;
 pub mod persian_content;
 pub mod phone_number;
 pub mod province;
+#[cfg(feature = "translate")]
 pub mod translate;
 pub(crate) mod utils;
 

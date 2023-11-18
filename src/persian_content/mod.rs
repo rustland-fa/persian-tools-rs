@@ -1,30 +1,23 @@
-use lazy_static::lazy_static;
-use regex::Regex;
+use std::ops::RangeInclusive;
 
 use crate::impl_trait_for_string_types;
 
-lazy_static! {
-    static ref PERSIAN_STR: Regex = Regex::new(r"^[\u0600-\u06FF]|[[:punc:]]+$").unwrap();
-    static ref HAS_PERSIAN_CHAR: Regex = Regex::new(r"[\u0600-\u06FF]").unwrap();
-}
+static HAS_PERSIAN_CHAR: RangeInclusive<char> = '\u{0600}'..='\u{06FF}';
 
 /// Set of helpers for manipulating Persian text.
 pub trait PersianContent: AsRef<str> {
     /// Checks if a text has at least a Persian char in it.
     fn has_persian_char(&self) -> bool {
-        HAS_PERSIAN_CHAR.is_match(self.as_ref())
+        self.as_ref().chars().any(|c| HAS_PERSIAN_CHAR.contains(&c))
     }
 
     /// Checks if a text is in Persian.
     fn is_persian_str(&self) -> bool {
-        // First remove the non-alphabetic chars
-        let string = self
+        self
             .as_ref()
             .chars()
-            .into_iter()
-            .filter(|c| c.is_alphabetic())
-            .collect::<String>();
-        PERSIAN_STR.is_match(&string)
+            .filter(|c| c.is_alphabetic()) // First remove the non-alphabetic chars
+            .all(|c| c.is_ascii_punctuation() || HAS_PERSIAN_CHAR.contains(&c))
     }
 
     /// Calculates how much of the text is in Persian Alphabet.
@@ -34,7 +27,6 @@ pub trait PersianContent: AsRef<str> {
         let string = self
             .as_ref()
             .chars()
-            .into_iter()
             .filter(|c| c.is_alphabetic())
             .collect::<String>();
         let len = string.chars().count();
@@ -43,7 +35,7 @@ pub trait PersianContent: AsRef<str> {
             return 100;
         }
 
-        let persian_chars = HAS_PERSIAN_CHAR.captures_iter(&string).count();
+        let persian_chars = string.chars().filter(|c| HAS_PERSIAN_CHAR.contains(c)).count();
         (persian_chars * 100 / len) as u8
     }
 }

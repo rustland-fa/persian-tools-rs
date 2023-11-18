@@ -1,12 +1,14 @@
+use crate::{create_fixed_map, utils::FixedMap};
+
 #[derive(Debug)]
 pub struct ShebaInfo {
-    nickname: &'static str,
-    name: &'static str,
-    persian_name: &'static str,
-    code: &'static str,
+    pub code: &'static str,
+    pub nickname: &'static str,
+    pub name: &'static str,
+    pub persian_name: &'static str,
 }
 
-pub static SHEBA_CODE_TABLE: phf::Map<&'static str, ShebaInfo> = phf::phf_map! {
+pub static SHEBA_CODE_TABLE: FixedMap<&str, ShebaInfo> = create_fixed_map! {
     "010" => ShebaInfo{
         nickname: "central-bank",
         name: "Central Bank of Iran",
@@ -145,7 +147,7 @@ pub static SHEBA_CODE_TABLE: phf::Map<&'static str, ShebaInfo> = phf::phf_map! {
         persian_name: "بانک مهر ایران",
         code: "060",
     },
-    "" => ShebaInfo{
+    "061" => ShebaInfo{
         nickname: "shahr",
         name: "City Bank",
         persian_name: "بانک شهر",

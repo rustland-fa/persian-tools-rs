@@ -1,11 +1,14 @@
 use strum::{Display, EnumString};
+
+use crate::{create_fixed_map, utils::FixedMap};
+
 #[derive(Debug)]
 pub struct City {
     pub farsi_name: &'static str,
     pub latin_name: &'static str,
 }
 
-pub static ALBORZ_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
+pub static ALBORZ_CITIES: FixedMap<&str, City> = create_fixed_map! {
     "" => City{
         farsi_name : "",
         latin_name : "",
@@ -17,7 +20,7 @@ pub enum Alborz {
     // TODO add all cities
 }
 
-pub static ARDABIL_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
+pub static ARDABIL_CITIES: FixedMap<&str, City> = create_fixed_map! {
     "" => City{
         farsi_name : "",
         latin_name : "",
@@ -29,7 +32,7 @@ pub enum Ardabil {
     // TODO add all cities
 }
 
-pub static AZERBAIJAN_EAST_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
+pub static AZERBAIJAN_EAST_CITIES: FixedMap<&str, City> = create_fixed_map! {
     "" => City{
         farsi_name : "",
         latin_name : "",
@@ -41,7 +44,7 @@ pub enum AzerbaijanEast {
     // TODO add all cities
 }
 
-pub static AZERBAIJAN_WEST_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
+pub static AZERBAIJAN_WEST_CITIES: FixedMap<&str, City> = create_fixed_map! {
     "" => City{
         farsi_name : "",
         latin_name : "",
@@ -53,7 +56,7 @@ pub enum AzerbaijanWest {
     // TODO add all cities
 }
 
-pub static BUSHEHR_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
+pub static BUSHEHR_CITIES: FixedMap<&str, City> = create_fixed_map! {
     "" => City{
         farsi_name : "",
         latin_name : "",
@@ -65,7 +68,7 @@ pub enum Bushehr {
     // TODO add all cities
 }
 
-pub static CHAHARMAHAAL_AND_BAKHTIARI_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
+pub static CHAHARMAHAAL_AND_BAKHTIARI_CITIES: FixedMap<&str, City> = create_fixed_map! {
     "" => City{
         farsi_name : "",
         latin_name : "",
@@ -77,7 +80,7 @@ pub enum ChaharMahaalAndBakhtiari {
     // TODO add all cities
 }
 
-pub static FARS_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
+pub static FARS_CITIES: FixedMap<&str, City> = create_fixed_map! {
     "" => City{
         farsi_name : "",
         latin_name : "",
@@ -89,7 +92,7 @@ pub enum Fars {
     // TODO add all cities
 }
 
-pub static GILAN_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
+pub static GILAN_CITIES: FixedMap<&str, City> = create_fixed_map! {
     "Rasht" => City{
         farsi_name : "رشت",
         latin_name : "Rasht",
@@ -180,7 +183,7 @@ pub enum Gilan {
     Khomam,
 }
 
-pub static GOLESTAN_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
+pub static GOLESTAN_CITIES: FixedMap<&str, City> = create_fixed_map! {
     "" => City{
         farsi_name : "",
         latin_name : "",
@@ -192,7 +195,7 @@ pub enum Golestan {
     // TODO add all cities
 }
 
-pub static HAMADAN_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
+pub static HAMADAN_CITIES: FixedMap<&str, City> = create_fixed_map! {
     "" => City{
         farsi_name : "",
         latin_name : "",
@@ -204,7 +207,7 @@ pub enum Hamadan {
     // TODO add all cities
 }
 
-pub static HORMOZGAN_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
+pub static HORMOZGAN_CITIES: FixedMap<&str, City> = create_fixed_map! {
     "" => City{
         farsi_name : "",
         latin_name : "",
@@ -216,7 +219,7 @@ pub enum Hormozgan {
     // TODO add all cities
 }
 
-pub static ILAM_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
+pub static ILAM_CITIES: FixedMap<&str, City> = create_fixed_map! {
     "" => City{
         farsi_name : "",
         latin_name : "",
@@ -228,7 +231,7 @@ pub enum Ilam {
     // TODO add all cities
 }
 
-pub static ISFAHAN_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
+pub static ISFAHAN_CITIES: FixedMap<&str, City> = create_fixed_map! {
     "" => City{
         farsi_name : "",
         latin_name : "",
@@ -240,7 +243,7 @@ pub enum Isfahan {
     // TODO add all cities
 }
 
-pub static KERMAN_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
+pub static KERMAN_CITIES: FixedMap<&str, City> = create_fixed_map! {
     "" => City{
         farsi_name : "",
         latin_name : "",
@@ -252,7 +255,7 @@ pub enum Kerman {
     // TODO add all cities
 }
 
-pub static KERMANSHAH_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
+pub static KERMANSHAH_CITIES: FixedMap<&str, City> = create_fixed_map! {
     "" => City{
         farsi_name : "",
         latin_name : "",
@@ -264,7 +267,7 @@ pub enum Kermanshah {
     // TODO add all cities
 }
 
-pub static KHORASAN_NORTH_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
+pub static KHORASAN_NORTH_CITIES: FixedMap<&str, City> = create_fixed_map! {
     "" => City{
         farsi_name : "",
         latin_name : "",
@@ -276,7 +279,7 @@ pub enum KhorasanNorth {
     // TODO add all cities
 }
 
-pub static KHORASAN_RAZAVI_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
+pub static KHORASAN_RAZAVI_CITIES: FixedMap<&str, City> = create_fixed_map! {
     "" => City{
         farsi_name : "",
         latin_name : "",
@@ -288,7 +291,7 @@ pub enum KhorasanRazavi {
     // TODO add all cities
 }
 
-pub static KHORASAN_SOUTH_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
+pub static KHORASAN_SOUTH_CITIES: FixedMap<&str, City> = create_fixed_map! {
     "" => City{
         farsi_name : "",
         latin_name : "",
@@ -300,7 +303,7 @@ pub enum KhorasanSouth {
     // TODO add all cities
 }
 
-pub static KHUZESTAN_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
+pub static KHUZESTAN_CITIES: FixedMap<&str, City> = create_fixed_map! {
     "" => City{
         farsi_name : "",
         latin_name : "",
@@ -312,7 +315,7 @@ pub enum Khuzestan {
     // TODO add all cities
 }
 
-pub static KOHGILUYEH_ANDBOYER_AHMAD_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
+pub static KOHGILUYEH_ANDBOYER_AHMAD_CITIES: FixedMap<&str, City> = create_fixed_map! {
     "" => City{
         farsi_name : "",
         latin_name : "",
@@ -324,7 +327,7 @@ pub enum KohgiluyehAndBoyerAhmad {
     // TODO add all cities
 }
 
-pub static KURDISTAN_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
+pub static KURDISTAN_CITIES: FixedMap<&str, City> = create_fixed_map! {
     "" => City{
         farsi_name : "",
         latin_name : "",
@@ -336,7 +339,7 @@ pub enum Kurdistan {
     // TODO add all cities
 }
 
-pub static LORESTAN_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
+pub static LORESTAN_CITIES: FixedMap<&str, City> = create_fixed_map! {
     "" => City{
         farsi_name : "",
         latin_name : "",
@@ -348,7 +351,7 @@ pub enum Lorestan {
     // TODO add all cities
 }
 
-pub static MARKAZI_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
+pub static MARKAZI_CITIES: FixedMap<&str, City> = create_fixed_map! {
     "" => City{
         farsi_name : "",
         latin_name : "",
@@ -360,7 +363,7 @@ pub enum Markazi {
     // TODO add all cities
 }
 
-pub static MAZANDARAN_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
+pub static MAZANDARAN_CITIES: FixedMap<&str, City> = create_fixed_map! {
     "" => City{
         farsi_name : "",
         latin_name : "",
@@ -372,7 +375,7 @@ pub enum Mazandaran {
     // TODO add all cities
 }
 
-pub static QAZVIN_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
+pub static QAZVIN_CITIES: FixedMap<&str, City> = create_fixed_map! {
     "" => City{
         farsi_name : "",
         latin_name : "",
@@ -384,7 +387,7 @@ pub enum Qazvin {
     // TODO add all cities
 }
 
-pub static QOM_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
+pub static QOM_CITIES: FixedMap<&str, City> = create_fixed_map! {
     "" => City{
         farsi_name : "",
         latin_name : "",
@@ -396,7 +399,7 @@ pub enum Qom {
     // TODO add all cities
 }
 
-pub static SEMNAN_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
+pub static SEMNAN_CITIES: FixedMap<&str, City> = create_fixed_map! {
     "" => City{
         farsi_name : "",
         latin_name : "",
@@ -408,7 +411,7 @@ pub enum Semnan {
     // TODO add all cities
 }
 
-pub static SISTAN_AND_BALUCHESTAN_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
+pub static SISTAN_AND_BALUCHESTAN_CITIES: FixedMap<&str, City> = create_fixed_map! {
     "Khash" => City{
         farsi_name : "خاش",
         latin_name : "Khash",
@@ -534,7 +537,7 @@ pub enum SistanAndBaluchestan {
     Golshan,
 }
 
-pub static TEHRAN_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
+pub static TEHRAN_CITIES: FixedMap<&str, City> = create_fixed_map! {
     "EslamShahr"=> City{
         farsi_name : "اسلامشهر",
         latin_name : "EslamShahr",
@@ -620,7 +623,7 @@ pub enum Tehran {
     Varamin,
 }
 
-pub static YAZD_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
+pub static YAZD_CITIES: FixedMap<&str, City> = create_fixed_map! {
     "Yasd" => City{
         farsi_name : "یزد",
         latin_name : "Yasd",
@@ -676,7 +679,7 @@ pub enum Yazd {
     Bahabad,
 }
 
-pub static ZANJAN_CITIES: phf::Map<&'static str, City> = phf::phf_map! {
+pub static ZANJAN_CITIES: FixedMap<&str, City> = create_fixed_map! {
     "Zanjan" => City{
         farsi_name : "زنجان",
         latin_name : "Zanjan",

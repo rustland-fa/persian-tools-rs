@@ -4,8 +4,6 @@ use regex::Regex;
 
 lazy_static! {
     static ref ORDINAL_SUFFIX_REGEX: Regex = Regex::new(r"(ام|اُم|ا|اُ|امین|اُمین|ین)$").unwrap();
-    // U+200C is Zero-width non-joiner
-    static ref SPACE_REGEX: Regex = Regex::new(r"(\u{200c}|\s)$").unwrap();
 }
 
 /// Set of helpers to add ordinal suffixes to Persian numbers.
@@ -54,7 +52,10 @@ pub trait NumberSuffix: AsRef<str> {
             } else if number.eq("اول") {
                 number = "یک".to_string();
             }
-            number = SPACE_REGEX.replace_all(&number, "").to_string();
+            // U+200C is Zero-width non-joiner
+            while number.ends_with(['\u{200c}', ' ']) {
+                number.pop();
+            } 
         }
 
         number

@@ -2,7 +2,7 @@ use lazy_static::lazy_static;
 use regex::Regex;
 use reqwest::header::USER_AGENT;
 use std::str::FromStr;
-use strum::ToString;
+use strum::Display;
 
 use crate::impl_trait_for_string_types;
 
@@ -10,7 +10,7 @@ lazy_static! {
     static ref DOUBLE_QUOTES: Regex = Regex::new(r#""(.*?)""#).unwrap();
 }
 /// Languages that can used for input and output of the [`translate`] function.
-#[derive(Debug, Clone, PartialEq, Copy, Hash, ToString)]
+#[derive(Debug, Clone, PartialEq, Copy, Hash, Display)]
 pub enum Language {
     English,
     Farsi,
@@ -104,7 +104,7 @@ pub trait Translate: AsRef<str> {
 impl_trait_for_string_types!(Translate);
 
 #[cfg(test)]
-mod translate {
+mod translate_test {
     use super::{Language, Translate};
 
     #[test]
