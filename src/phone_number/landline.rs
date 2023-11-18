@@ -1,16 +1,13 @@
-use lazy_static::lazy_static;
-use regex::Regex;
 use std::str::FromStr;
+
+use lazy_regex::{Lazy, Regex, lazy_regex};
 
 use crate::{
     impl_trait_for_string_types,
     province::{IranProvince, PROVINCES},
 };
 
-lazy_static! {
-    static ref LANDLINE_NUMBER_REGEX: Regex =
-        Regex::new(r"^(\+98|0|98|0098)?([1-9]{2})(\d{8})$").unwrap();
-}
+static LANDLINE_NUMBER_REGEX: Lazy<Regex> = lazy_regex!(r"^(\+98|0|98|0098)?([1-9]{2})(\d{8})$");
 
 /// A trait helper to work with landline numbers.
 pub trait LandlineNumber: AsRef<str> {

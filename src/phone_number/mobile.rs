@@ -1,14 +1,11 @@
-use lazy_static::lazy_static;
-use regex::Regex;
 use std::str::FromStr;
 use strum::EnumString;
 
+use lazy_regex::{Lazy, Regex, lazy_regex};
+
 use crate::{create_fixed_map, utils::FixedMap};
 
-lazy_static! {
-    static ref MOBILE_NUMBER_REGEX: Regex =
-        Regex::new(r"^(\+98|0|98|0098)?(9\d{2})(\d{3})(\d{4})$").unwrap();
-}
+static MOBILE_NUMBER_REGEX: Lazy<Regex> = lazy_regex!(r"^(\+98|0|98|0098)?(9\d{2})(\d{3})(\d{4})$");
 
 /// List of Iranian mobile operators.
 // in future phf crate if support enums as key we must replace str with enum

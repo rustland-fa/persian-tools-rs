@@ -1,10 +1,8 @@
-use crate::impl_trait_for_string_types;
-use lazy_static::lazy_static;
-use regex::Regex;
+use lazy_regex::{Lazy, Regex, lazy_regex};
 
-lazy_static! {
-    static ref ORDINAL_SUFFIX_REGEX: Regex = Regex::new(r"(ام|اُم|ا|اُ|امین|اُمین|ین)$").unwrap();
-}
+use crate::impl_trait_for_string_types;
+
+static ORDINAL_SUFFIX_REGEX: Lazy<Regex> = lazy_regex!(r"(ام|اُم|ا|اُ|امین|اُمین|ین)$");
 
 /// Set of helpers to add ordinal suffixes to Persian numbers.
 pub trait NumberSuffix: AsRef<str> {
