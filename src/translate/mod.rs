@@ -90,7 +90,6 @@ pub trait Translate: AsRef<str> {
                     .and_then(|i| s[i..].find('"').map(|i2| (i, i2 + i)))
                 {
                     Some((start, end)) if start != 0 && end != start => {
-                        println!("{start}..{end}");
                         Ok(s[start..end].to_owned())
                     }
                     _ => Err("Does Not Exist".to_string()),
