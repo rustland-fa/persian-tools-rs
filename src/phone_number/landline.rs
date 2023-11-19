@@ -1,27 +1,72 @@
 use std::str::FromStr;
 
-use lazy_regex::{Lazy, Regex, lazy_regex};
-
 use crate::{
     impl_trait_for_string_types,
     province::{IranProvince, PROVINCES},
 };
 
-static LANDLINE_NUMBER_REGEX: Lazy<Regex> = lazy_regex!(r"^(\+98|0|98|0098)?([1-9]{2})(\d{8})$");
+#[cfg(any(feature = "regex", feature = "regex_lite"))]
+static LANDLINE_NUMBER_REGEX: lazy_regex::Lazy<lazy_regex::Regex> =
+    lazy_regex::lazy_regex!(r#"^(\+98|0|98|0098)?([1-9]{2})(\d{8})$"#);
 
 /// A trait helper to work with landline numbers.
 pub trait LandlineNumber: AsRef<str> {
     /// Check if the landline number is valid.
+    #[cfg(any(feature = "regex", feature = "regex_lite"))]
     fn is_valid_landline_number(&self) -> bool {
         LANDLINE_NUMBER_REGEX.is_match(self.as_ref())
     }
 
+    /// Check if the landline number is valid.
+    #[cfg(not(any(feature = "regex", feature = "regex_lite")))]
+    fn is_valid_landline_number(&self) -> bool {
+        let text = self.as_ref();
+        let skip = super::get_num_skip(text);
+
+        if text.len() - skip != 10 {
+            return false;
+        }
+
+        let mut chars = text.chars().skip(skip);
+
+        if !chars.by_ref().take(2).all(|c| ('1'..='9').contains(&c)) {
+            return false;
+        }
+
+        chars.all(|c| c.is_ascii_digit())
+    }
+
     /// Get three-digit prefix of a landline number.
+    #[cfg(any(feature = "regex", feature = "regex_lite"))]
     fn get_prefix_landline_number(&self) -> crate::Result<String> {
         LANDLINE_NUMBER_REGEX
             .captures(self.as_ref())
             .map(|c| format!("0{}", &c[2]))
             .ok_or_else(|| "Invalid landline number".into())
+    }
+
+    /// Get three-digit prefix of a landline number.
+    #[cfg(not(any(feature = "regex", feature = "regex_lite")))]
+    fn get_prefix_landline_number(&self) -> crate::Result<String> {
+        let text = self.as_ref();
+        let skip = super::get_num_skip(text);
+
+        if text.len() - skip != 10 {
+            return Err("Invalid landline number".into());
+        }
+
+        text.chars()
+            .skip(skip)
+            .take(2)
+            .try_fold(String::with_capacity(2), |mut acc, c| {
+                if ('1'..='9').contains(&c) {
+                    acc.push(c);
+                    Ok(acc)
+                } else {
+                    Err("Invalid landline number".into())
+                }
+            })
+            .map(|s| format!("0{s}"))
     }
 
     /// Get province of the landline number.

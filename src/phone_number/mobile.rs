@@ -1,11 +1,14 @@
 use std::str::FromStr;
 use strum::EnumString;
 
-use lazy_regex::{Lazy, Regex, lazy_regex};
+use crate::{
+    impl_trait_for_string_types,
+    utils::{create_fixed_map, FixedMap},
+};
 
-use crate::{create_fixed_map, utils::FixedMap};
-
-static MOBILE_NUMBER_REGEX: Lazy<Regex> = lazy_regex!(r"^(\+98|0|98|0098)?(9\d{2})(\d{3})(\d{4})$");
+#[cfg(any(feature = "regex", feature = "regex_lite"))]
+static MOBILE_NUMBER_REGEX: lazy_regex::Lazy<lazy_regex::Regex> =
+    lazy_regex::lazy_regex!(r#"^(\+98|0|98|0098)?(9\d{2})(\d{3})(\d{4})$"#);
 
 /// List of Iranian mobile operators.
 // in future phf crate if support enums as key we must replace str with enum
@@ -78,11 +81,32 @@ pub enum IranMobileOperator {
 /// A trait helper to work with mobile numbers.
 pub trait MobileNumber: AsRef<str> {
     /// Check if the mobile number is valid.
+    #[cfg(any(feature = "regex", feature = "regex_lite"))]
     fn is_valid_mobile_number(&self) -> bool {
         MOBILE_NUMBER_REGEX.is_match(self.as_ref())
     }
 
+    /// Check if the mobile number is valid.
+    #[cfg(not(any(feature = "regex", feature = "regex_lite")))]
+    fn is_valid_mobile_number(&self) -> bool {
+        let text = self.as_ref();
+        let skip = super::get_num_skip(text);
+
+        if text.len() - skip != 10 {
+            return false;
+        }
+
+        let mut chars = text.chars().skip(skip);
+
+        if !chars.next().is_some_and(|c| c == '9') {
+            return false;
+        }
+
+        chars.all(|c| c.is_ascii_digit())
+    }
+
     /// Get the operator name of the mobile number.
+    #[cfg(any(feature = "regex", feature = "regex_lite"))]
     fn get_operator_name_from_mobile_number(&self) -> crate::Result<Option<IranMobileOperator>> {
         let number = MOBILE_NUMBER_REGEX
             .captures(self.as_ref())
@@ -97,8 +121,27 @@ pub trait MobileNumber: AsRef<str> {
             }
         }))
     }
+
+    /// Get the operator name of the mobile number.
+    #[cfg(not(any(feature = "regex", feature = "regex_lite")))]
+    fn get_operator_name_from_mobile_number(&self) -> crate::Result<Option<IranMobileOperator>> {
+        let text = self.as_ref();
+        let skip = super::get_num_skip(text);
+
+        if text.len() - skip != 10 {
+            return Err("Invalid mobile number".into());
+        }
+
+        let number: String = "0".chars().chain(text.chars().skip(skip)).collect();
+
+        Ok(IRAN_MOBILE_OPERATORS.iter().find_map(|(k, v)| {
+            if v.iter().any(|x| x == &&number[..x.len()]) {
+                Some(IranMobileOperator::from_str(k).unwrap())
+            } else {
+                None
+            }
+        }))
+    }
 }
 
-impl MobileNumber for String {}
-
-impl MobileNumber for str {}
+impl_trait_for_string_types!(MobileNumber);

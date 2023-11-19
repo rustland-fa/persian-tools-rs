@@ -1,6 +1,19 @@
 pub mod landline;
 pub mod mobile;
 
+#[cfg(not(any(feature = "regex", feature = "regex_lite")))]
+static NUMBER_PREFIX: [&str; 4] = ["+98", "0", "98", "0098"];
+
+#[cfg(not(any(feature = "regex", feature = "regex_lite")))]
+fn get_num_skip(text: &str) -> usize {
+    for prefix in NUMBER_PREFIX {
+        if text.starts_with(prefix) {
+            return prefix.len();
+        }
+    }
+    0
+}
+
 #[cfg(test)]
 mod tests {
     use super::{landline::*, mobile::*};

@@ -1,8 +1,11 @@
-use lazy_regex::{Lazy, Regex, lazy_regex};
-
 use crate::impl_trait_for_string_types;
 
-static ORDINAL_SUFFIX_REGEX: Lazy<Regex> = lazy_regex!(r"(ام|اُم|ا|اُ|امین|اُمین|ین)$");
+#[cfg(any(feature = "regex", feature = "regex_lite"))]
+static ORDINAL_SUFFIX_REGEX: lazy_regex::Lazy<lazy_regex::Regex> =
+    lazy_regex::lazy_regex!(r"(ام|اُم|ا|اُ|امین|اُمین|ین)$");
+
+#[cfg(not(any(feature = "regex", feature = "regex_lite")))]
+static ORDINAL_SUFFIX: [&str; 7] = ["ام", "اُم", "ا", "اُ", "امین", "اُمین", "ین"];
 
 /// Set of helpers to add ordinal suffixes to Persian numbers.
 pub trait NumberSuffix: AsRef<str> {
@@ -42,7 +45,19 @@ pub trait NumberSuffix: AsRef<str> {
     fn remove_ordinal_suffix(&self) -> String {
         let mut number = self.as_ref().to_string();
         if !number.is_empty() {
-            number = ORDINAL_SUFFIX_REGEX.replace_all(&number, "").to_string();
+            #[cfg(any(feature = "regex", feature = "regex_lite"))]
+            {
+                number = ORDINAL_SUFFIX_REGEX.replace_all(&number, "").to_string();
+            }
+            #[cfg(not(any(feature = "regex", feature = "regex_lite")))]
+            {
+                for suffix in ORDINAL_SUFFIX {
+                    while number.ends_with(suffix) {
+                        number.replace_range(number.len() - suffix.len().., "");
+                    }
+                }
+            }
+
             if number.ends_with("سوم") {
                 number = number.replace("سوم", "سه");
             } else if number.ends_with('م') {
@@ -53,7 +68,7 @@ pub trait NumberSuffix: AsRef<str> {
             // U+200C is Zero-width non-joiner
             while number.ends_with(['\u{200c}', ' ']) {
                 number.pop();
-            } 
+            }
         }
 
         number

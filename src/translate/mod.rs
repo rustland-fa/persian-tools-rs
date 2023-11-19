@@ -1,11 +1,8 @@
-use lazy_regex::{Lazy, Regex, lazy_regex};
 use reqwest::header::USER_AGENT;
 use std::str::FromStr;
 use strum::Display;
 
 use crate::impl_trait_for_string_types;
-
-static DOUBLE_QUOTES: Lazy<Regex> = lazy_regex!(r#""(.*?)""#);
 
 /// Languages that can used for input and output of the [`translate`] function.
 #[derive(Debug, Clone, PartialEq, Copy, Hash, Display)]
@@ -87,12 +84,16 @@ pub trait Translate: AsRef<str> {
             .text()
             .map_err(|e| e.to_string())
             .and_then(|s| {
-                if let Some(c) = DOUBLE_QUOTES.captures_iter(&s).next() {
-                    let content = c[0].trim();
-                    let len = content.len();
-                    Ok(content[1..len - 1].to_string())
-                } else {
-                    Err("Does Not Exist".to_string())
+                match s
+                    .find('"')
+                    .map(|i| i + 1)
+                    .and_then(|i| s[i..].find('"').map(|i2| (i, i2 + i)))
+                {
+                    Some((start, end)) if start != 0 && end != 0 => {
+                        println!("{start}..{end}");
+                        Ok(s[start..end].to_owned())
+                    }
+                    _ => Err("Does Not Exist".to_string()),
                 }
             })
             .map_err(|e| e.into())

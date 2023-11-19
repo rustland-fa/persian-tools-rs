@@ -11,9 +11,10 @@ macro_rules! impl_trait_for_string_types {
     };
 }
 
-#[macro_export]
 macro_rules! create_fixed_map {
     ($($key:literal => $value:expr,)*) => {
         FixedMap(&[$(($key, $value)),*])
     };
 }
+
+pub(crate) use create_fixed_map;

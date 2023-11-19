@@ -1,4 +1,7 @@
-use crate::{create_fixed_map, impl_trait_for_string_types, utils::FixedMap};
+use crate::{
+    impl_trait_for_string_types,
+    utils::{create_fixed_map, FixedMap},
+};
 use std::convert::TryFrom;
 
 /// Supported language variants.
@@ -160,7 +163,6 @@ pub trait WordsToNumber: AsRef<str> {
         &self,
     ) -> Result<N, &'static str> {
         // TODO: ^^ maybe make a module-level Result alias.
-        use std::convert::TryInto;
         const CANT_CONVERT: &str = "Given number does not fit in the provided`N`";
 
         let parsed = self

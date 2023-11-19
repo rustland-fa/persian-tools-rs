@@ -2,7 +2,7 @@
 name = "persian-tools"
 version = "0.1.0"
 authors = ["rustland-fa developers"]
-edition = "2018"
+edition = "2021"
 license = "MIT"
 readme = "README.md"
 repository = "https://github.com/rustland-fa/persian-tools-rs"
@@ -15,12 +15,12 @@ include = ["src/", "*.md"]
 
 [features]
 default = ["translate", "regex"]
-regex = ["lazy-regex/regex"]
-regex_lite = ["lazy-regex/lite"]
+regex = ["dep:lazy-regex", "lazy-regex/regex", "lazy-regex/unicode"]
+regex-lite = ["dep:lazy-regex", "lazy-regex/lite"]
 translate = ["dep:reqwest"]
 
 [dependencies]
-lazy-regex = { version = "3.1", default-features = false }
+lazy-regex = { version = "3.1", default-features = false, optional = true }
 strum = { version = "0.25", features = ["derive"] }
 num-traits = "0.2"
 reqwest = { version = "0.11", features = ["blocking"], optional = true }

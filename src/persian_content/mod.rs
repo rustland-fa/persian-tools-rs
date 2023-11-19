@@ -13,8 +13,7 @@ pub trait PersianContent: AsRef<str> {
 
     /// Checks if a text is in Persian.
     fn is_persian_str(&self) -> bool {
-        self
-            .as_ref()
+        self.as_ref()
             .chars()
             .filter(|c| c.is_alphabetic()) // First remove the non-alphabetic chars
             .all(|c| c.is_ascii_punctuation() || HAS_PERSIAN_CHAR.contains(&c))
@@ -35,7 +34,10 @@ pub trait PersianContent: AsRef<str> {
             return 100;
         }
 
-        let persian_chars = string.chars().filter(|c| HAS_PERSIAN_CHAR.contains(c)).count();
+        let persian_chars = string
+            .chars()
+            .filter(|c| HAS_PERSIAN_CHAR.contains(c))
+            .count();
         (persian_chars * 100 / len) as u8
     }
 }

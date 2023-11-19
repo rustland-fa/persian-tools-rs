@@ -1,4 +1,4 @@
-use crate::{create_fixed_map, utils::FixedMap};
+use crate::utils::{create_fixed_map, FixedMap};
 
 #[derive(Debug)]
 pub struct ShebaInfo {
