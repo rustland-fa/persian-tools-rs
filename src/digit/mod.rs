@@ -1,7 +1,4 @@
-use crate::{
-    impl_trait_for_string_types,
-    utils::{create_fixed_map, FixedMap},
-};
+use crate::utils::*;
 use std::convert::TryFrom;
 
 /// Supported language variants.

@@ -1,8 +1,8 @@
 use std::str::FromStr;
 
 use crate::{
-    impl_trait_for_string_types,
     province::{IranProvince, PROVINCES},
+    utils::impl_trait_for_string_types,
 };
 
 /// A trait helper to work with landline numbers.

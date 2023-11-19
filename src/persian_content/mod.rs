@@ -1,6 +1,6 @@
 use std::ops::RangeInclusive;
 
-use crate::impl_trait_for_string_types;
+use crate::utils::impl_trait_for_string_types;
 
 static HAS_PERSIAN_CHAR: RangeInclusive<char> = '\u{0600}'..='\u{06FF}';
 

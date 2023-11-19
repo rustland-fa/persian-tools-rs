@@ -1,4 +1,4 @@
-use crate::{banking::sheba_table::ShebaInfo, impl_trait_for_string_types};
+use crate::{banking::sheba_table::ShebaInfo, utils::impl_trait_for_string_types};
 
 use crate::banking::sheba_table::SHEBA_CODE_TABLE;
 

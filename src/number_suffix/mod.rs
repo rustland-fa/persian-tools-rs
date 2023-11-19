@@ -1,4 +1,4 @@
-use crate::impl_trait_for_string_types;
+use crate::utils::impl_trait_for_string_types;
 
 static ORDINAL_SUFFIX: [&str; 7] = ["ام", "اُم", "ا", "اُ", "امین", "اُمین", "ین"];
 
@@ -40,11 +40,11 @@ pub trait NumberSuffix: AsRef<str> {
     fn remove_ordinal_suffix(&self) -> String {
         let mut number = self.as_ref().to_string();
         if !number.is_empty() {
-                for suffix in ORDINAL_SUFFIX {
-                    while number.ends_with(suffix) {
-                        number.replace_range(number.len() - suffix.len().., "");
-                    }
+            for suffix in ORDINAL_SUFFIX {
+                while number.ends_with(suffix) {
+                    number.replace_range(number.len() - suffix.len().., "");
                 }
+            }
 
             if number.ends_with("سوم") {
                 number = number.replace("سوم", "سه");

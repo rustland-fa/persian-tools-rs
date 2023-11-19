@@ -1,4 +1,4 @@
-use crate::impl_trait_for_string_types;
+use crate::utils::impl_trait_for_string_types;
 
 pub trait NationalCode: AsRef<str> {
     /// Takes a string and check if it's a valid Iranian national code or not.

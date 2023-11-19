@@ -1,5 +1,5 @@
 use crate::banking::bank_codes_table::BANK_CODE_TABLE;
-use crate::impl_trait_for_string_types;
+use crate::utils::impl_trait_for_string_types;
 
 pub mod bank_codes_table;
 pub mod sheba;

@@ -1,22 +1,34 @@
 use reqwest::header::USER_AGENT;
 use std::str::FromStr;
-use strum::Display;
+use strum::{Display, EnumString};
 
-use crate::impl_trait_for_string_types;
+use crate::utils::impl_trait_for_string_types;
 
 /// Languages that can used for input and output of the [`translate`] function.
-#[derive(Debug, Clone, PartialEq, Copy, Hash, Display)]
+#[derive(Debug, Clone, PartialEq, Copy, Hash, Display, EnumString)]
+#[strum(ascii_case_insensitive)]
 pub enum Language {
+    #[strum(serialize = "english", serialize = "en", serialize = "انگلیسی")]
     English,
+    #[strum(serialize = "farsi", serialize = "fa", serialize = "فارسی")]
     Farsi,
+    #[strum(serialize = "arabic", serialize = "ar", serialize = "عربی")]
     Arabic,
+    #[strum(serialize = "chinese", serialize = "zh", serialize = "چینی")]
     Chinese,
+    #[strum(serialize = "french", serialize = "fr", serialize = "فرانسوی")]
     French,
+    #[strum(serialize = "german", serialize = "de", serialize = "آلمانی")]
     German,
+    #[strum(serialize = "italian", serialize = "it", serialize = "ایتالیایی")]
     Italian,
+    #[strum(serialize = "japanese", serialize = "ja", serialize = "ژاپنی")]
     Japanese,
+    #[strum(serialize = "portuguese", serialize = "pt", serialize = "پرتغالی")]
     Portuguese,
+    #[strum(serialize = "russian", serialize = "ru", serialize = "روسی")]
     Russian,
+    #[strum(serialize = "spanish", serialize = "es", serialize = "اسپانیایی")]
     Spanish,
 }
 
@@ -38,30 +50,9 @@ impl Language {
         }
     }
 
-    /// Create a Language from &str like "en" or "French". Case Doesn't matter.
+    /// Create a Language from &str like "en", "French" or "ژاپنی". Case Doesn't matter.
     pub fn from(s: &str) -> crate::Result<Self> {
         Self::from_str(s).map_err(|e| e.into())
-    }
-}
-
-impl FromStr for Language {
-    type Err = &'static str;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s.to_string().to_lowercase().as_str() {
-            "en" | "english" => Ok(Language::English),
-            "fa" | "farsi" => Ok(Language::Farsi),
-            "ar" | "arabic" => Ok(Language::Arabic),
-            "zh" | "chinese" => Ok(Language::Chinese),
-            "fr" | "french" => Ok(Language::French),
-            "de" | "german" => Ok(Language::German),
-            "it" | "italian" => Ok(Language::Italian),
-            "pt" | "portuguese" => Ok(Language::Portuguese),
-            "ru" | "russian" => Ok(Language::Russian),
-            "es" | "spanish" => Ok(Language::Spanish),
-            "ja" | "japanese" => Ok(Language::Japanese),
-            _ => Err("input invalid!"),
-        }
     }
 }
 
