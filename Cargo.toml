@@ -14,7 +14,7 @@ categories = ["algorithms", "date-and-time", "encoding", "internationalization",
 include = ["src/", "*.md"]
 
 [features]
-default = ["translate"]
+default = []
 translate = ["dep:reqwest"]
 
 [dependencies]
