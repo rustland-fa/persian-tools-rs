@@ -89,7 +89,7 @@ pub trait Translate: AsRef<str> {
                     .map(|i| i + 1)
                     .and_then(|i| s[i..].find('"').map(|i2| (i, i2 + i)))
                 {
-                    Some((start, end)) if start != 0 && end != 0 => {
+                    Some((start, end)) if start != 0 && end != start => {
                         println!("{start}..{end}");
                         Ok(s[start..end].to_owned())
                     }

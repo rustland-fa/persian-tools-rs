@@ -14,13 +14,10 @@ categories = ["algorithms", "date-and-time", "encoding", "internationalization",
 include = ["src/", "*.md"]
 
 [features]
-default = ["translate", "regex"]
-regex = ["dep:lazy-regex", "lazy-regex/regex", "lazy-regex/unicode"]
-regex-lite = ["dep:lazy-regex", "lazy-regex/lite"]
+default = ["translate"]
 translate = ["dep:reqwest"]
 
 [dependencies]
-lazy-regex = { version = "3.1", default-features = false, optional = true }
 strum = { version = "0.25", features = ["derive"] }
 num-traits = "0.2"
 reqwest = { version = "0.11", features = ["blocking"], optional = true }

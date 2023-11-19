@@ -161,7 +161,7 @@ pub trait WordsToNumber: AsRef<str> {
             + Copy,
     >(
         &self,
-    ) -> Result<N, &'static str> {
+    ) -> crate::Result<N> {
         // TODO: ^^ maybe make a module-level Result alias.
         const CANT_CONVERT: &str = "Given number does not fit in the provided`N`";
 
@@ -175,9 +175,9 @@ pub trait WordsToNumber: AsRef<str> {
         let mut final_value: N = num_traits::Zero::zero();
         let mut intermediary_value: N = num_traits::Zero::zero();
 
-        let check_add = |this: N, that: N| this.checked_add(&that).ok_or(CANT_CONVERT);
+        let check_add = |lhs: N, rhs: N| lhs.checked_add(&rhs).ok_or(CANT_CONVERT);
 
-        let checked_mul = |this: N, that: N| this.checked_mul(&that).ok_or(CANT_CONVERT);
+        let checked_mul = |lhs: N, rhs: N| lhs.checked_mul(&rhs).ok_or(CANT_CONVERT);
         let mut last: Option<TokenType> = None;
 
         for t in parsed {
@@ -190,7 +190,7 @@ pub trait WordsToNumber: AsRef<str> {
                 }
                 TokenType::Multiplier(m) => {
                     if last.map_or(false, |last| matches!(last, TokenType::Multiplier(_))) {
-                        return Err("Incorrect format: two multipliers in a row");
+                        return Err("Incorrect format: two multipliers in a row".into());
                     }
 
                     // a bit of helper: if this is the first iteration, you can omit a 'یک' and we

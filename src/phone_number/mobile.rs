@@ -6,10 +6,6 @@ use crate::{
     utils::{create_fixed_map, FixedMap},
 };
 
-#[cfg(any(feature = "regex", feature = "regex_lite"))]
-static MOBILE_NUMBER_REGEX: lazy_regex::Lazy<lazy_regex::Regex> =
-    lazy_regex::lazy_regex!(r#"^(\+98|0|98|0098)?(9\d{2})(\d{3})(\d{4})$"#);
-
 /// List of Iranian mobile operators.
 // in future phf crate if support enums as key we must replace str with enum
 pub static IRAN_MOBILE_OPERATORS: FixedMap<&str, &[&str]> = create_fixed_map! {
@@ -81,13 +77,6 @@ pub enum IranMobileOperator {
 /// A trait helper to work with mobile numbers.
 pub trait MobileNumber: AsRef<str> {
     /// Check if the mobile number is valid.
-    #[cfg(any(feature = "regex", feature = "regex_lite"))]
-    fn is_valid_mobile_number(&self) -> bool {
-        MOBILE_NUMBER_REGEX.is_match(self.as_ref())
-    }
-
-    /// Check if the mobile number is valid.
-    #[cfg(not(any(feature = "regex", feature = "regex_lite")))]
     fn is_valid_mobile_number(&self) -> bool {
         let text = self.as_ref();
         let skip = super::get_num_skip(text);
@@ -106,24 +95,6 @@ pub trait MobileNumber: AsRef<str> {
     }
 
     /// Get the operator name of the mobile number.
-    #[cfg(any(feature = "regex", feature = "regex_lite"))]
-    fn get_operator_name_from_mobile_number(&self) -> crate::Result<Option<IranMobileOperator>> {
-        let number = MOBILE_NUMBER_REGEX
-            .captures(self.as_ref())
-            .map(|c| format!("0{}", &self.as_ref()[c[1].len()..]))
-            .ok_or("Invalid mobile number")?;
-
-        Ok(IRAN_MOBILE_OPERATORS.iter().find_map(|(k, v)| {
-            if v.iter().any(|x| x == &&number[..x.len()]) {
-                Some(IranMobileOperator::from_str(k).unwrap())
-            } else {
-                None
-            }
-        }))
-    }
-
-    /// Get the operator name of the mobile number.
-    #[cfg(not(any(feature = "regex", feature = "regex_lite")))]
     fn get_operator_name_from_mobile_number(&self) -> crate::Result<Option<IranMobileOperator>> {
         let text = self.as_ref();
         let skip = super::get_num_skip(text);

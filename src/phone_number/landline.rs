@@ -5,20 +5,9 @@ use crate::{
     province::{IranProvince, PROVINCES},
 };
 
-#[cfg(any(feature = "regex", feature = "regex_lite"))]
-static LANDLINE_NUMBER_REGEX: lazy_regex::Lazy<lazy_regex::Regex> =
-    lazy_regex::lazy_regex!(r#"^(\+98|0|98|0098)?([1-9]{2})(\d{8})$"#);
-
 /// A trait helper to work with landline numbers.
 pub trait LandlineNumber: AsRef<str> {
     /// Check if the landline number is valid.
-    #[cfg(any(feature = "regex", feature = "regex_lite"))]
-    fn is_valid_landline_number(&self) -> bool {
-        LANDLINE_NUMBER_REGEX.is_match(self.as_ref())
-    }
-
-    /// Check if the landline number is valid.
-    #[cfg(not(any(feature = "regex", feature = "regex_lite")))]
     fn is_valid_landline_number(&self) -> bool {
         let text = self.as_ref();
         let skip = super::get_num_skip(text);
@@ -37,16 +26,6 @@ pub trait LandlineNumber: AsRef<str> {
     }
 
     /// Get three-digit prefix of a landline number.
-    #[cfg(any(feature = "regex", feature = "regex_lite"))]
-    fn get_prefix_landline_number(&self) -> crate::Result<String> {
-        LANDLINE_NUMBER_REGEX
-            .captures(self.as_ref())
-            .map(|c| format!("0{}", &c[2]))
-            .ok_or_else(|| "Invalid landline number".into())
-    }
-
-    /// Get three-digit prefix of a landline number.
-    #[cfg(not(any(feature = "regex", feature = "regex_lite")))]
     fn get_prefix_landline_number(&self) -> crate::Result<String> {
         let text = self.as_ref();
         let skip = super::get_num_skip(text);
