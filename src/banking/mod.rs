@@ -35,15 +35,13 @@ pub trait Banking: AsRef<str> {
     }
 
     /// Get the bank name from card number.
-    fn get_bank_name_from_card_number(&self) -> String {
+    fn get_bank_name_from_card_number(&self) -> Option<&str> {
         let number = self.as_ref();
-        if number.is_valid_bank_card_number() {
-            return BANK_CODE_TABLE
+        number.is_valid_bank_card_number().then(|| {
+            BANK_CODE_TABLE
                 .get_bank_name_from_code(&number[0..6])
                 .unwrap()
-                .to_owned(); // its ok to unwrap because the card is valid
-        }
-        number.to_string()
+        })
     }
 }
 
@@ -70,23 +68,23 @@ mod test {
     #[test]
     fn get_bank_name_from_card_number_test() {
         assert_eq!(
-            "بانک قوامین",
+            Some("بانک قوامین"),
             "6395991167965615".get_bank_name_from_card_number()
         );
         assert_eq!(
-            "بانک کشاورزی",
+            Some("بانک کشاورزی"),
             "6037701689095443".get_bank_name_from_card_number()
         );
         assert_eq!(
-            "بانک سامان",
+            Some("بانک سامان"),
             "6219861034529007".get_bank_name_from_card_number()
         );
-        assert_eq!("", "".get_bank_name_from_card_number());
+        assert_eq!(None, "".get_bank_name_from_card_number());
 
         let string = "6395991167965615".to_string();
-        assert_eq!("بانک قوامین", string.get_bank_name_from_card_number());
+        assert_eq!(Some("بانک قوامین"), string.get_bank_name_from_card_number());
         assert_eq!(
-            "بانک قوامین",
+            Some("بانک قوامین"),
             Banking::get_bank_name_from_card_number(&string)
         );
     }
