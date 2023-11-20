@@ -62,23 +62,26 @@ mod tests {
         assert_eq!(
             "09324341133"
                 .get_operator_name_from_mobile_number()
-                .unwrap()
                 .unwrap(),
             IranMobileOperator::Taliya
         );
         assert_eq!(
             "+989324341133"
                 .get_operator_name_from_mobile_number()
-                .unwrap()
                 .unwrap(),
             IranMobileOperator::Taliya
         );
         assert_eq!(
             "+989134341133"
                 .get_operator_name_from_mobile_number()
-                .unwrap()
                 .unwrap(),
             IranMobileOperator::MCI
+        );
+        assert_eq!(
+            "+989999048230"
+                .get_operator_name_from_mobile_number()
+                .unwrap(),
+            IranMobileOperator::SamanTel
         );
         assert!("+98999999999"
             .get_operator_name_from_mobile_number()

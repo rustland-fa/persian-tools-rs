@@ -37,7 +37,7 @@ pub static IRAN_MOBILE_OPERATORS: FixedMap<&str, &[&str]> = create_fixed_map! {
         &["099914"]
     },
     "SamanTel" => {
-        &["099999", "099998", "099997", "099996"]
+        &["099990", "099999", "099998", "099997", "099996"]
     },
     "LotusTel" => {
     &["09990"]
@@ -84,15 +84,11 @@ pub trait MobileNumber: AsRef<str> {
 
         let mut chars = text.chars().skip(skip);
 
-        if !chars.next().is_some_and(|c| c == '9') {
-            return false;
-        }
-
-        chars.all(|c| c.is_ascii_digit())
+        chars.next().is_some_and(|c| c == '9') && chars.all(|c| c.is_ascii_digit())
     }
 
     /// Get the operator name of the mobile number.
-    fn get_operator_name_from_mobile_number(&self) -> crate::Result<Option<IranMobileOperator>> {
+    fn get_operator_name_from_mobile_number(&self) -> crate::Result<IranMobileOperator> {
         let text = self.as_ref();
         let skip = super::get_num_skip(text);
 
@@ -100,15 +96,12 @@ pub trait MobileNumber: AsRef<str> {
             return Err("Invalid mobile number".into());
         }
 
-        let number: String = "0".chars().chain(text.chars().skip(skip)).collect();
+        let number = format!("0{}", &text[skip..]);
 
-        Ok(IRAN_MOBILE_OPERATORS.iter().find_map(|(k, v)| {
-            if v.iter().any(|x| x == &&number[..x.len()]) {
-                Some(IranMobileOperator::from_str(k).unwrap())
-            } else {
-                None
-            }
-        }))
+        IRAN_MOBILE_OPERATORS.iter().find_map(|(k, v)| {
+            v.iter().any(|x| x == &&number[..x.len()]).then(|| IranMobileOperator::from_str(k).unwrap())
+        })
+        .ok_or("Can't find the operator".into())
     }
 }
 

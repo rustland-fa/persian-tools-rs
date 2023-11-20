@@ -16,7 +16,7 @@ pub trait ShebaNumber: AsRef<str> {
 
     fn iso_7064_mod_97_10(&self) -> crate::Result<i32> {
         let sheba_code = self.as_ref();
-        // check if shaba is in valid format (^IR[0-9]{24}$)
+        // check if sheba is in valid format (^IR[0-9]{24}$)
         if !(sheba_code.len() == 26
             && sheba_code.starts_with("IR")
             && sheba_code.chars().skip(2).all(|c| c.is_ascii_digit()))

@@ -22,23 +22,20 @@ pub trait PersianContent: AsRef<str> {
     /// Calculates how much of the text is in Persian Alphabet.
     /// It doesn't count the numbers and other non-alphabetical chars like " « , ،
     fn persian_percentage(&self) -> u8 {
-        // First remove the non-alphabetic chars
-        let string = self
+        let (persian_chars_len, len) = self
             .as_ref()
             .chars()
-            .filter(|c| c.is_alphabetic())
-            .collect::<String>();
-        let len = string.chars().count();
+            .fold((0u32, 0u32), |(mut pc, mut len), c| {
+                if c.is_alphabetic() {
+                    if HAS_PERSIAN_CHAR.contains(&c) {
+                        pc += 1;
+                    }
+                    len += 1;
+                }
+                (pc, len)
+            });
 
-        if len == 0 {
-            return 100;
-        }
-
-        let persian_chars = string
-            .chars()
-            .filter(|c| HAS_PERSIAN_CHAR.contains(c))
-            .count();
-        (persian_chars * 100 / len) as u8
+        (persian_chars_len * 100).checked_div(len).unwrap_or(100) as u8
     }
 }
 
@@ -67,6 +64,7 @@ mod test {
 
     #[test]
     fn persian_percentage_test() {
+        assert_eq!("".persian_percentage(), 100);
         assert_eq!("سلام".persian_percentage(), 100);
         assert_eq!("گفت: «سلام»".persian_percentage(), 100);
         assert_eq!("ok this is text with".persian_percentage(), 0);

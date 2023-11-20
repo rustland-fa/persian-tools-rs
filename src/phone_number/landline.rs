@@ -18,11 +18,7 @@ pub trait LandlineNumber: AsRef<str> {
 
         let mut chars = text.chars().skip(skip);
 
-        if !chars.by_ref().take(2).all(|c| ('1'..='9').contains(&c)) {
-            return false;
-        }
-
-        chars.all(|c| c.is_ascii_digit())
+        chars.by_ref().take(2).all(|c| ('1'..='9').contains(&c)) && chars.all(|c| c.is_ascii_digit())
     }
 
     /// Get three-digit prefix of a landline number.
