@@ -1,50 +1,41 @@
-use lazy_static::lazy_static;
-use regex::Regex;
+use std::ops::RangeInclusive;
 
-use crate::impl_trait_for_string_types;
+use crate::utils::impl_trait_for_string_types;
 
-lazy_static! {
-    static ref PERSIAN_STR: Regex = Regex::new(r"^[\u0600-\u06FF]|[[:punc:]]+$").unwrap();
-    static ref HAS_PERSIAN_CHAR: Regex = Regex::new(r"[\u0600-\u06FF]").unwrap();
-}
+static HAS_PERSIAN_CHAR: RangeInclusive<char> = '\u{0600}'..='\u{06FF}';
 
 /// Set of helpers for manipulating Persian text.
 pub trait PersianContent: AsRef<str> {
     /// Checks if a text has at least a Persian char in it.
     fn has_persian_char(&self) -> bool {
-        HAS_PERSIAN_CHAR.is_match(self.as_ref())
+        self.as_ref().chars().any(|c| HAS_PERSIAN_CHAR.contains(&c))
     }
 
     /// Checks if a text is in Persian.
     fn is_persian_str(&self) -> bool {
-        // First remove the non-alphabetic chars
-        let string = self
-            .as_ref()
+        self.as_ref()
             .chars()
-            .into_iter()
-            .filter(|c| c.is_alphabetic())
-            .collect::<String>();
-        PERSIAN_STR.is_match(&string)
+            .filter(|c| c.is_alphabetic()) // First remove the non-alphabetic chars
+            .all(|c| c.is_ascii_punctuation() || HAS_PERSIAN_CHAR.contains(&c))
     }
 
     /// Calculates how much of the text is in Persian Alphabet.
     /// It doesn't count the numbers and other non-alphabetical chars like " « , ،
     fn persian_percentage(&self) -> u8 {
-        // First remove the non-alphabetic chars
-        let string = self
+        let (persian_chars_len, len) = self
             .as_ref()
             .chars()
-            .into_iter()
-            .filter(|c| c.is_alphabetic())
-            .collect::<String>();
-        let len = string.chars().count();
+            .fold((0u32, 0u32), |(mut pc, mut len), c| {
+                if c.is_alphabetic() {
+                    if HAS_PERSIAN_CHAR.contains(&c) {
+                        pc += 1;
+                    }
+                    len += 1;
+                }
+                (pc, len)
+            });
 
-        if len == 0 {
-            return 100;
-        }
-
-        let persian_chars = HAS_PERSIAN_CHAR.captures_iter(&string).count();
-        (persian_chars * 100 / len) as u8
+        (persian_chars_len * 100).checked_div(len).unwrap_or(100) as u8
     }
 }
 
@@ -73,6 +64,7 @@ mod test {
 
     #[test]
     fn persian_percentage_test() {
+        assert_eq!("".persian_percentage(), 100);
         assert_eq!("سلام".persian_percentage(), 100);
         assert_eq!("گفت: «سلام»".persian_percentage(), 100);
         assert_eq!("ok this is text with".persian_percentage(), 0);

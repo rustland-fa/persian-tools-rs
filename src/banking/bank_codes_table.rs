@@ -1,10 +1,12 @@
+use crate::utils::{create_fixed_map, FixedMap};
+
 #[derive(Debug)]
 pub struct BankCode {
-    pub name: &'static str,
     pub code: &'static str,
+    pub name: &'static str,
 }
 
-pub static BANK_CODE_TABLE: phf::Map<&'static str, BankCode> = phf::phf_map! {
+pub static BANK_CODE_TABLE: FixedMap<&str, BankCode> = create_fixed_map! {
     "636214" => BankCode {
         name: "بانک آینده",
         code: "636214",
@@ -186,3 +188,15 @@ pub static BANK_CODE_TABLE: phf::Map<&'static str, BankCode> = phf::phf_map! {
         code: "628157",
     },
 };
+
+impl FixedMap<&str, BankCode> {
+    pub fn get_bank_code_from_name(&self, name: &str) -> Option<&'static str> {
+        self.0
+            .iter()
+            .find_map(|(_, bc)| (bc.name == name).then_some(bc.code))
+    }
+
+    pub fn get_bank_name_from_code(&self, code: &str) -> Option<&'static str> {
+        self.get(&code).map(|v| v.name)
+    }
+}

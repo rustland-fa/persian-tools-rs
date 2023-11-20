@@ -1,6 +1,17 @@
 pub mod landline;
 pub mod mobile;
 
+static NUMBER_PREFIX: [&str; 4] = ["+98", "0", "98", "0098"];
+
+fn get_num_skip(text: &str) -> usize {
+    for prefix in NUMBER_PREFIX {
+        if text.starts_with(prefix) {
+            return prefix.len();
+        }
+    }
+    0
+}
+
 #[cfg(test)]
 mod tests {
     use super::{landline::*, mobile::*};
@@ -51,23 +62,26 @@ mod tests {
         assert_eq!(
             "09324341133"
                 .get_operator_name_from_mobile_number()
-                .unwrap()
                 .unwrap(),
             IranMobileOperator::Taliya
         );
         assert_eq!(
             "+989324341133"
                 .get_operator_name_from_mobile_number()
-                .unwrap()
                 .unwrap(),
             IranMobileOperator::Taliya
         );
         assert_eq!(
             "+989134341133"
                 .get_operator_name_from_mobile_number()
-                .unwrap()
                 .unwrap(),
             IranMobileOperator::MCI
+        );
+        assert_eq!(
+            "+989999048230"
+                .get_operator_name_from_mobile_number()
+                .unwrap(),
+            IranMobileOperator::SamanTel
         );
         assert!("+98999999999"
             .get_operator_name_from_mobile_number()

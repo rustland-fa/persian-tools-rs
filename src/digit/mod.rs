@@ -1,4 +1,4 @@
-use crate::impl_trait_for_string_types;
+use crate::utils::*;
 use std::convert::TryFrom;
 
 /// Supported language variants.
@@ -60,7 +60,7 @@ pub trait Digit: AsRef<str> {
 impl_trait_for_string_types!(Digit);
 
 /// The multipliers of the persian number system, up to a billion.
-pub static MULTIPLIERS: phf::Map<&'static str, u32> = phf::phf_map! {
+pub static MULTIPLIERS: FixedMap<&str, u32> = create_fixed_map! {
     "هزار" => 1_000,
     "میلیون" => 1_000_000,
     "میلیارد" => 1_000_000_000,
@@ -72,7 +72,7 @@ pub static MULTIPLIERS: phf::Map<&'static str, u32> = phf::phf_map! {
 /// Includes [1-20], [30, 40, ..., 100], and [100, 200, ..., 900]
 // TODO: probably move to another file, too much bloat here.
 // TOOD: Is it 'nohsad' or 'noh sad'? 'haftsad or 'haft sad'?
-pub static FACE_VALUE: phf::Map<&'static str, u16> = phf::phf_map! {
+pub static FACE_VALUE: FixedMap<&str, u16> = create_fixed_map! {
     "صفر" => 0,
     "یک" => 1,
     "دو" => 2,
@@ -122,9 +122,9 @@ impl TryFrom<&str> for TokenType {
     type Error = &'static str;
 
     fn try_from(token: &str) -> Result<Self, Self::Error> {
-        if let Some(v) = FACE_VALUE.get(token) {
+        if let Some(v) = FACE_VALUE.get(&token) {
             Ok(TokenType::FaceValue(*v))
-        } else if let Some(m) = MULTIPLIERS.get(token) {
+        } else if let Some(m) = MULTIPLIERS.get(&token) {
             Ok(TokenType::Multiplier(*m))
         } else {
             Err("Unsupported token")
@@ -158,15 +158,13 @@ pub trait WordsToNumber: AsRef<str> {
             + Copy,
     >(
         &self,
-    ) -> Result<N, &'static str> {
+    ) -> crate::Result<N> {
         // TODO: ^^ maybe make a module-level Result alias.
-        use std::convert::TryInto;
         const CANT_CONVERT: &str = "Given number does not fit in the provided`N`";
 
         let parsed = self
             .as_ref()
             .split(' ')
-            .into_iter()
             .filter(|t| *t != "و")
             .map(TokenType::try_from)
             .collect::<Result<Vec<_>, _>>()?;
@@ -174,9 +172,9 @@ pub trait WordsToNumber: AsRef<str> {
         let mut final_value: N = num_traits::Zero::zero();
         let mut intermediary_value: N = num_traits::Zero::zero();
 
-        let check_add = |this: N, that: N| this.checked_add(&that).ok_or(CANT_CONVERT);
+        let check_add = |lhs: N, rhs: N| lhs.checked_add(&rhs).ok_or(CANT_CONVERT);
 
-        let checked_mul = |this: N, that: N| this.checked_mul(&that).ok_or(CANT_CONVERT);
+        let checked_mul = |lhs: N, rhs: N| lhs.checked_mul(&rhs).ok_or(CANT_CONVERT);
         let mut last: Option<TokenType> = None;
 
         for t in parsed {
@@ -189,7 +187,7 @@ pub trait WordsToNumber: AsRef<str> {
                 }
                 TokenType::Multiplier(m) => {
                     if last.map_or(false, |last| matches!(last, TokenType::Multiplier(_))) {
-                        return Err("Incorrect format: two multipliers in a row");
+                        return Err("Incorrect format: two multipliers in a row".into());
                     }
 
                     // a bit of helper: if this is the first iteration, you can omit a 'یک' and we

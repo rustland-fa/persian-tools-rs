@@ -1,11 +1,12 @@
+use crate::utils::{create_fixed_map, FixedMap};
+
 pub mod city;
 
 use city::*;
-use phf::phf_map;
 use strum::{Display, EnumString};
 
 // in future if phf support enum as key enum must be replace with string
-pub static PROVINCES: phf::Map<&'static str, Province> = phf_map! {
+pub static PROVINCES: FixedMap<&str, Province> = create_fixed_map! {
     "Alborz" => Province{
         prefix_phone : "026",
         farsi_name : "",
@@ -233,5 +234,5 @@ pub struct Province {
     pub prefix_phone: &'static str,
     pub farsi_name: &'static str,
     pub latin_name: &'static str,
-    pub cities: &'static phf::Map<&'static str, city::City>,
+    pub cities: &'static FixedMap<&'static str, city::City>,
 }

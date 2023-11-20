@@ -1,36 +1,52 @@
-use lazy_static::lazy_static;
-use regex::Regex;
 use std::str::FromStr;
 
 use crate::{
-    impl_trait_for_string_types,
     province::{IranProvince, PROVINCES},
+    utils::impl_trait_for_string_types,
 };
-
-lazy_static! {
-    static ref LANDLINE_NUMBER_REGEX: Regex =
-        Regex::new(r"^(\+98|0|98|0098)?([1-9]{2})(\d{8})$").unwrap();
-}
 
 /// A trait helper to work with landline numbers.
 pub trait LandlineNumber: AsRef<str> {
     /// Check if the landline number is valid.
     fn is_valid_landline_number(&self) -> bool {
-        LANDLINE_NUMBER_REGEX.is_match(self.as_ref())
+        let text = self.as_ref();
+        let skip = super::get_num_skip(text);
+
+        if text.len() - skip != 10 {
+            return false;
+        }
+
+        let mut chars = text.chars().skip(skip);
+
+        chars.by_ref().take(2).all(|c| ('1'..='9').contains(&c)) && chars.all(|c| c.is_ascii_digit())
     }
 
     /// Get three-digit prefix of a landline number.
     fn get_prefix_landline_number(&self) -> crate::Result<String> {
-        LANDLINE_NUMBER_REGEX
-            .captures(&self.as_ref())
-            .map(|c| format!("0{}", &c[2]))
-            .ok_or_else(|| "Invalid landline number".into())
+        let text = self.as_ref();
+        let skip = super::get_num_skip(text);
+
+        if text.len() - skip != 10 {
+            return Err("Invalid landline number".into());
+        }
+
+        text.chars()
+            .skip(skip)
+            .take(2)
+            .try_fold(String::from("0"), |mut acc, c| {
+                if ('1'..='9').contains(&c) {
+                    acc.push(c);
+                    Ok(acc)
+                } else {
+                    Err("Invalid landline number".into())
+                }
+            })
     }
 
     /// Get province of the landline number.
     fn get_province_from_landline_number(&self) -> crate::Result<Option<IranProvince>> {
         self.get_prefix_landline_number().map(|p| {
-            PROVINCES.into_iter().find_map(|(k, v)| {
+            PROVINCES.iter().find_map(|(k, v)| {
                 if v.prefix_phone == p {
                     Some(IranProvince::from_str(k).unwrap())
                 } else {

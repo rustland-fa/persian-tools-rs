@@ -1,27 +1,34 @@
-use lazy_static::lazy_static;
-use regex::Regex;
 use reqwest::header::USER_AGENT;
 use std::str::FromStr;
-use strum::ToString;
+use strum::{Display, EnumString};
 
-use crate::impl_trait_for_string_types;
+use crate::utils::impl_trait_for_string_types;
 
-lazy_static! {
-    static ref DOUBLE_QUOTES: Regex = Regex::new(r#""(.*?)""#).unwrap();
-}
 /// Languages that can used for input and output of the [`translate`] function.
-#[derive(Debug, Clone, PartialEq, Copy, Hash, ToString)]
+#[derive(Debug, Clone, PartialEq, Copy, Hash, Display, EnumString)]
+#[strum(ascii_case_insensitive)]
 pub enum Language {
+    #[strum(serialize = "english", serialize = "en", serialize = "انگلیسی")]
     English,
+    #[strum(serialize = "farsi", serialize = "fa", serialize = "فارسی")]
     Farsi,
+    #[strum(serialize = "arabic", serialize = "ar", serialize = "عربی")]
     Arabic,
+    #[strum(serialize = "chinese", serialize = "zh", serialize = "چینی")]
     Chinese,
+    #[strum(serialize = "french", serialize = "fr", serialize = "فرانسوی")]
     French,
+    #[strum(serialize = "german", serialize = "de", serialize = "آلمانی")]
     German,
+    #[strum(serialize = "italian", serialize = "it", serialize = "ایتالیایی")]
     Italian,
+    #[strum(serialize = "japanese", serialize = "ja", serialize = "ژاپنی")]
     Japanese,
+    #[strum(serialize = "portuguese", serialize = "pt", serialize = "پرتغالی")]
     Portuguese,
+    #[strum(serialize = "russian", serialize = "ru", serialize = "روسی")]
     Russian,
+    #[strum(serialize = "spanish", serialize = "es", serialize = "اسپانیایی")]
     Spanish,
 }
 
@@ -43,30 +50,9 @@ impl Language {
         }
     }
 
-    /// Create a Language from &str like "en" or "French". Case Doesn't matter.
+    /// Create a Language from &str like "en", "French" or "ژاپنی". Case Doesn't matter.
     pub fn from(s: &str) -> crate::Result<Self> {
         Self::from_str(s).map_err(|e| e.into())
-    }
-}
-
-impl FromStr for Language {
-    type Err = &'static str;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s.to_string().to_lowercase().as_str() {
-            "en" | "english" => Ok(Language::English),
-            "fa" | "farsi" => Ok(Language::Farsi),
-            "ar" | "arabic" => Ok(Language::Arabic),
-            "zh" | "chinese" => Ok(Language::Chinese),
-            "fr" | "french" => Ok(Language::French),
-            "de" | "german" => Ok(Language::German),
-            "it" | "italian" => Ok(Language::Italian),
-            "pt" | "portuguese" => Ok(Language::Portuguese),
-            "ru" | "russian" => Ok(Language::Russian),
-            "es" | "spanish" => Ok(Language::Spanish),
-            "ja" | "japanese" => Ok(Language::Japanese),
-            _ => Err("input invalid!"),
-        }
     }
 }
 
@@ -89,12 +75,15 @@ pub trait Translate: AsRef<str> {
             .text()
             .map_err(|e| e.to_string())
             .and_then(|s| {
-                if let Some(c) = DOUBLE_QUOTES.captures_iter(&s).next() {
-                    let content = c[0].trim();
-                    let len = content.len();
-                    Ok(content[1..len - 1].to_string())
-                } else {
-                    Err("Does Not Exist".to_string())
+                match s
+                    .find('"')
+                    .map(|i| i + 1)
+                    .and_then(|i| s[i..].find('"').map(|i2| (i, i2 + i)))
+                {
+                    Some((start, end)) if start != 0 && end != start => {
+                        Ok(s[start..end].to_owned())
+                    }
+                    _ => Err("Does Not Exist".to_string()),
                 }
             })
             .map_err(|e| e.into())
@@ -104,7 +93,7 @@ pub trait Translate: AsRef<str> {
 impl_trait_for_string_types!(Translate);
 
 #[cfg(test)]
-mod translate {
+mod translate_test {
     use super::{Language, Translate};
 
     #[test]
