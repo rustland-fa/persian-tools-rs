@@ -4,10 +4,7 @@ use crate::banking::sheba_table::SHEBA_CODE_TABLE;
 
 pub trait ShebaNumber: AsRef<str> {
     fn is_valid_sheba_code(&self) -> bool {
-        match self.iso_7064_mod_97_10() {
-            Ok(i) => i == 1,
-            Err(_) => false,
-        }
+        self.iso_7064_mod_97_10().is_ok_and(|i| i == 1)
     }
 
     fn sheba_code_info(&self) -> Option<&ShebaInfo> {

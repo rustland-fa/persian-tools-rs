@@ -9,28 +9,28 @@ pub mod sheba_table;
 pub trait Banking: AsRef<str> {
     /// Checks if the bank card number is valid or not.
     fn is_valid_bank_card_number(&self) -> bool {
-        let number = self.as_ref();
-        let len = number.len();
-        if len < 16
-            || number.parse::<u64>().is_err()
-            || number[1..10].parse::<u32>().unwrap() == 0
-            || number[10..16].parse::<u32>().unwrap() == 0
-        {
+        let text = self.as_ref();
+        if text.len() != 16 {
             return false;
         }
 
-        let mut sum = 0;
-        let mut even;
-        let mut sub_digit;
-        for i in 0..16 {
-            even = if i % 2 == 0 { 2 } else { 1 };
-            sub_digit = number[i..i + 1].parse::<i32>().unwrap() * even;
-            sum += if sub_digit > 9 {
-                sub_digit - 9
-            } else {
-                sub_digit
-            };
+        let digits: Vec<u32> = text.chars().map_while(|c| c.to_digit(10)).collect();
+        if digits.len() != 16 || digits.iter().sum::<u32>() == 0 {
+            return false;
         }
+
+        let sum = digits
+            .into_iter()
+            .enumerate()
+            .map(|(idx, x)| {
+                let mut sub_digit = x * if idx % 2 == 0 { 2 } else { 1 };
+                if sub_digit > 9 {
+                    sub_digit -= 9
+                }
+                sub_digit
+            })
+            .sum::<u32>();
+
         sum % 10 == 0
     }
 
