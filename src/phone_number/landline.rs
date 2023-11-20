@@ -33,7 +33,7 @@ pub trait LandlineNumber: AsRef<str> {
         text.chars()
             .skip(skip)
             .take(2)
-            .try_fold(String::with_capacity(2), |mut acc, c| {
+            .try_fold(String::from("0"), |mut acc, c| {
                 if ('1'..='9').contains(&c) {
                     acc.push(c);
                     Ok(acc)
@@ -41,7 +41,6 @@ pub trait LandlineNumber: AsRef<str> {
                     Err("Invalid landline number".into())
                 }
             })
-            .map(|s| format!("0{s}"))
     }
 
     /// Get province of the landline number.
