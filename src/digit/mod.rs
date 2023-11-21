@@ -4,16 +4,16 @@ use std::convert::TryFrom;
 /// Supported language variants.
 #[derive(Clone, Copy)]
 pub enum Lang {
-    Fa,
     En,
+    Fa,
     Ar,
 }
 
 /// Set of helpers to manipulate Persian (or Arabic!) digits.
 pub trait Digit: AsRef<str> {
     const DIGITS: [[char; 10]; 3] = [
-        ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'],
         ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+        ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'],
         ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'],
     ];
 
@@ -54,6 +54,20 @@ pub trait Digit: AsRef<str> {
     /// a string that represents the same digits but in English.
     fn digits_ar_to_en(&self) -> String {
         self.digits_convert(Lang::Ar, Lang::En)
+    }
+
+    /// Takes a string that may contain Persian or Arabic digits, and returns
+    /// a string that represents the same digits but in English.
+    fn digits_to_en(&self) -> String {
+        self.digits_convert(Lang::Ar, Lang::En)
+            .digits_convert(Lang::Fa, Lang::En)
+    }
+
+    /// Check if the string have any non english (arabic, persian) digits.
+    fn have_non_en_digit(&self) -> bool {
+        self.as_ref()
+            .chars()
+            .any(|c| Self::DIGITS.iter().skip(1).any(|d| d.contains(&c)))
     }
 }
 

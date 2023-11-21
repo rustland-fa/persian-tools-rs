@@ -2,8 +2,9 @@ use crate::banking::bank_codes_table::BANK_CODE_TABLE;
 use crate::utils::impl_trait_for_string_types;
 
 pub mod bank_codes_table;
+pub mod card_number_extractor;
 pub mod sheba;
-pub mod sheba_table;
+mod sheba_table;
 
 /// Set of helpers for the banking system of Iran.
 pub trait Banking: AsRef<str> {
@@ -34,13 +35,8 @@ pub trait Banking: AsRef<str> {
         sum % 10 == 0
     }
 
-    /// Extract all the card numbers.
-    fn extract_card_numbers(&self) -> Vec<String> {
-        todo!()
-    }
-
     /// Get the bank name from card number.
-    fn get_bank_name_from_card_number(&self) -> Option<&str> {
+    fn get_bank_name_from_card_number(&self) -> Option<&'static str> {
         let number = self.as_ref();
         number.is_valid_bank_card_number().then(|| {
             BANK_CODE_TABLE
