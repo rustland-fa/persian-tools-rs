@@ -54,8 +54,10 @@ pub trait ExtractCardNumber: AsRef<str> {
                     pure.push(c);
                     len += 1;
 
+                    // a valid iranian card-number have 16 digits
                     if len == 16 {
                         if pure.have_non_en_digit() {
+                            // if there is any non english digit replace them with english digits
                             pure = pure.digits_to_en();
                         }
 
@@ -72,6 +74,7 @@ pub trait ExtractCardNumber: AsRef<str> {
                             pure: pure.clone(),
                             index: result.len() + 1,
                         });
+                        // clear buffers and len after we pushed the information to result
                         base.clear();
                         pure.clear();
                         len = 0;
@@ -79,6 +82,7 @@ pub trait ExtractCardNumber: AsRef<str> {
                 }
                 CharType::Seperator => base.push(c),
                 CharType::Other => {
+                    // clear buffers and len in case of unsupported character
                     base.clear();
                     pure.clear();
                     len = 0;
