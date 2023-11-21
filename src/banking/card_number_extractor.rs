@@ -50,39 +50,41 @@ pub trait ExtractCardNumber: AsRef<str> {
         let mut base = String::with_capacity(20);
         let mut pure = String::with_capacity(16);
         for c in digits.chars() {
-            if is_digit(&c) {
-                base.push(c);
-                pure.push(c);
-                len += 1;
+            match CharType::new(&c) {
+                CharType::Digit => {
+                    base.push(c);
+                    pure.push(c);
+                    len += 1;
 
-                if len == 16 {
-                    if pure.have_non_en_digit() {
-                        pure = pure.digits_to_en();
+                    if len == 16 {
+                        if pure.have_non_en_digit() {
+                            pure = pure.digits_to_en();
+                        }
+
+                        result.push(CardNumber {
+                            base: base.clone(),
+                            is_valid: options
+                                .check_validation
+                                .then(|| pure.is_valid_bank_card_number()),
+                            bank_name: if options.detect_bank_name {
+                                pure.get_bank_name_from_card_number()
+                            } else {
+                                None
+                            },
+                            pure: pure.clone(),
+                            index: result.len() + 1,
+                        });
+                        base.clear();
+                        pure.clear();
+                        len = 0;
                     }
-
-                    result.push(CardNumber {
-                        base: base.clone(),
-                        is_valid: options
-                            .check_validation
-                            .then(|| pure.is_valid_bank_card_number()),
-                        bank_name: if options.detect_bank_name {
-                            pure.get_bank_name_from_card_number()
-                        } else {
-                            None
-                        },
-                        pure: pure.clone(),
-                        index: result.len() + 1,
-                    });
+                }
+                CharType::Seperator => base.push(c),
+                CharType::Other => {
                     base.clear();
                     pure.clear();
                     len = 0;
                 }
-            } else if EXTRA_CHARS.contains(&c) {
-                base.push(c);
-            } else {
-                base.clear();
-                pure.clear();
-                len = 0;
             }
         }
 
@@ -94,10 +96,20 @@ pub trait ExtractCardNumber: AsRef<str> {
     }
 }
 
-fn is_digit(c: &char) -> bool {
-    c.is_ascii_digit()
-        || ('\u{0660}'..='\u{0669}').contains(c)
-        || ('\u{06F0}'..='\u{06F9}').contains(c)
+enum CharType {
+    Digit,
+    Seperator,
+    Other,
+}
+
+impl CharType {
+    fn new(c: &char) -> Self {
+        match c {
+            '0'..='9' | '\u{0660}'..='\u{0669}' | '\u{06F0}'..='\u{06F9}' => Self::Digit,
+            c if EXTRA_CHARS.contains(c) => Self::Seperator,
+            _ => Self::Other,
+        }
+    }
 }
 
 impl_trait_for_string_types!(ExtractCardNumber);
