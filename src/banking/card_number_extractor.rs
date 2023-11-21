@@ -1,8 +1,6 @@
 use super::Banking;
 use crate::{digit::Digit, utils::impl_trait_for_string_types};
 
-static EXTRA_CHARS: [char; 4] = ['-', '_', '*', '.'];
-
 /// Card number information
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CardNumber {
@@ -106,7 +104,7 @@ impl CharType {
     fn new(c: &char) -> Self {
         match c {
             '0'..='9' | '\u{0660}'..='\u{0669}' | '\u{06F0}'..='\u{06F9}' => Self::Digit,
-            c if EXTRA_CHARS.contains(c) => Self::Seperator,
+            '-' | '_' | '*' | '.' => Self::Seperator,
             _ => Self::Other,
         }
     }
