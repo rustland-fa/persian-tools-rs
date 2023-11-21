@@ -34,6 +34,11 @@ pub trait Banking: AsRef<str> {
         sum % 10 == 0
     }
 
+    /// Extract all the card numbers.
+    fn extract_card_numbers(&self) -> Vec<String> {
+        todo!()
+    }
+
     /// Get the bank name from card number.
     fn get_bank_name_from_card_number(&self) -> Option<&str> {
         let number = self.as_ref();

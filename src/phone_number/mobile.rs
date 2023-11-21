@@ -98,10 +98,14 @@ pub trait MobileNumber: AsRef<str> {
 
         let number = format!("0{}", &text[skip..]);
 
-        IRAN_MOBILE_OPERATORS.iter().find_map(|(k, v)| {
-            v.iter().any(|x| x == &&number[..x.len()]).then(|| IranMobileOperator::from_str(k).unwrap())
-        })
-        .ok_or("Can't find the operator".into())
+        IRAN_MOBILE_OPERATORS
+            .iter()
+            .find_map(|(k, v)| {
+                v.iter()
+                    .any(|x| x == &&number[..x.len()])
+                    .then(|| IranMobileOperator::from_str(k).unwrap())
+            })
+            .ok_or("Can't find the operator".into())
     }
 }
 
