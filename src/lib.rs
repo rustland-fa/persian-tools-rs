@@ -1,3 +1,5 @@
+#![deny(unsafe_code)]
+
 pub mod banking;
 pub mod date;
 pub mod digit;
