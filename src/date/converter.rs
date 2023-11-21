@@ -73,7 +73,7 @@ pub fn convert_gregorian_to_jalali(year: u32, month: u32, day: u32) -> crate::Re
     }
 }
 
-// gets the difference between dey and january
+// Gets the day difference between Persian month, Dey and Gregorian month January
 fn dey_jan_diff(year: u32) -> u32 {
     if year_is_leap(year) {
         return 11;
@@ -99,7 +99,11 @@ pub struct GregorianDate {
 
 /// month range is 1..12
 /// day starts from 1
-pub fn convert_jalali_to_gregorian(year: u32, month: u32, day: u32) -> GregorianDate {
+pub fn convert_jalali_to_gregorian(
+    year: u32,
+    month: u32,
+    day: u32,
+) -> crate::Result<GregorianDate> {
     let mut gregorian_year = year + 621;
     let mut gregorian_day_of_month = 0;
     let mut gregorian_month = 0;
@@ -141,11 +145,11 @@ pub fn convert_jalali_to_gregorian(year: u32, month: u32, day: u32) -> Gregorian
         }
     }
 
-    GregorianDate {
+    Ok(GregorianDate {
         year: gregorian_year,
         month: gregorian_month as u32,
         day: gregorian_day_of_month,
-    }
+    })
 }
 
 #[cfg(test)]
@@ -182,7 +186,7 @@ mod tests {
 
     #[test]
     fn jalali_to_gregorian_date() {
-        let result = convert_jalali_to_gregorian(1402, 8, 24);
+        let result = convert_jalali_to_gregorian(1402, 8, 24).unwrap();
         assert_eq!(
             result,
             GregorianDate {
@@ -195,7 +199,7 @@ mod tests {
 
     #[test]
     fn jalali_to_gregorian_date_2() {
-        let result = convert_jalali_to_gregorian(1402, 3, 3);
+        let result = convert_jalali_to_gregorian(1402, 3, 3).unwrap();
         assert_eq!(
             result,
             GregorianDate {
