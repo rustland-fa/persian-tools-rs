@@ -1,23 +1,19 @@
 static DAY_SUM: [u32; 12] = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
 static DAY_SUM_KABISE: [u32; 12] = [0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335];
 
-#[derive(PartialEq, Eq, Debug)]
+#[derive(PartialEq, Eq, Debug, Clone, Copy, PartialOrd, Ord)]
 pub struct JalaliDate {
     pub day: u32,
     pub year: u32,
     pub month: u32,
 }
 
-pub fn convert_gregorian_to_jalali(
-    year: u32,
-    month: u32,
-    day: u32,
-) -> Result<JalaliDate, &'static str> {
+pub fn convert_gregorian_to_jalali(year: u32, month: u32, day: u32) -> crate::Result<JalaliDate> {
     if month > 12 || month < 1 {
-        return Err("cant do it");
+        return Err("Month should be between 1 and 12".into());
     }
 
-    let days_sum = if is_kabise(year) {
+    let days_sum = if year_is_leap(year) {
         DAY_SUM_KABISE[month as usize - 1] + day
     } else {
         DAY_SUM[month as usize - 1] + day
@@ -77,24 +73,13 @@ pub fn convert_gregorian_to_jalali(
     }
 }
 
+// gets the difference between dey and january
 fn dey_jan_diff(year: u32) -> u32 {
-    if is_kabise(year) {
+    if year_is_leap(year) {
         return 11;
     }
 
     return 10;
-}
-
-fn is_kabise(year: u32) -> bool {
-    if year % 4 == 0 && year % 100 != 0 {
-        return true;
-    }
-
-    if year % 400 == 0 && year % 100 == 0 {
-        return true;
-    }
-
-    false
 }
 
 fn year_is_leap(gregorian_year: u32) -> bool {
@@ -105,7 +90,7 @@ fn year_is_leap(gregorian_year: u32) -> bool {
 static gregorian_months: [u32; 12] = [30, 31, 30, 31, 31, 30, 31, 30, 31, 31, 28, 31];
 static gregorian_month_leap: [u32; 12] = [30, 31, 30, 31, 31, 30, 31, 30, 31, 31, 29, 31];
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, PartialOrd, Ord)]
 pub struct GregorianDate {
     pub year: u32,
     pub month: u32,
