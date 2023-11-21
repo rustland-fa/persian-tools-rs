@@ -28,6 +28,26 @@ pub struct ExtractCardNumberOptions {
     pub filter_valid_card_numbers: bool,
 }
 
+impl ExtractCardNumberOptions {
+    /// Enable all `check_validation`, `detect_bank_name` and `filter_valid_card_numbers` options.
+    pub fn all() -> Self {
+        Self {
+            check_validation: true,
+            detect_bank_name: true,
+            filter_valid_card_numbers: true,
+        }
+    }
+
+    /// Disable all options.
+    pub fn none() -> Self {
+        Self {
+            check_validation: false,
+            detect_bank_name: false,
+            filter_valid_card_numbers: false,
+        }
+    }
+}
+
 impl Default for ExtractCardNumberOptions {
     fn default() -> Self {
         Self {
