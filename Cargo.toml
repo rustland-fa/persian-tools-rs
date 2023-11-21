@@ -21,4 +21,5 @@ translate = ["dep:reqwest"]
 strum = { version = "0.25", features = ["derive"] }
 num-traits = "0.2"
 reqwest = { version = "0.11", features = ["blocking"], optional = true }
+phf = { version = "0.11", features = ["macros"] }
 

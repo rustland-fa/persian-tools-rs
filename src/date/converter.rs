@@ -9,7 +9,7 @@ pub struct JalaliDate {
 }
 
 pub fn convert_gregorian_to_jalali(year: u32, month: u32, day: u32) -> crate::Result<JalaliDate> {
-    if month > 12 || month < 1 {
+    if !(1..=12).contains(&month) {
         return Err("Month should be between 1 and 12".into());
     }
 
@@ -24,17 +24,17 @@ pub fn convert_gregorian_to_jalali(year: u32, month: u32, day: u32) -> crate::Re
         let jalai_year = year - 622;
 
         if days_sum % 30 == 0 {
-            return Ok(JalaliDate {
+            Ok(JalaliDate {
                 year: jalai_year,
                 day: 30,
                 month: (days_sum / 30) + 9,
-            });
+            })
         } else {
-            return Ok(JalaliDate {
+            Ok(JalaliDate {
                 year: jalai_year,
                 day: days_sum % 30,
                 month: (days_sum / 30) + 10,
-            });
+            })
         }
     } else {
         let days_sum = days_sum - 79;
@@ -42,32 +42,32 @@ pub fn convert_gregorian_to_jalali(year: u32, month: u32, day: u32) -> crate::Re
 
         if days_sum <= 186 {
             if days_sum % 31 == 0 {
-                return Ok(JalaliDate {
+                Ok(JalaliDate {
                     day: 31,
                     year: jalali_year,
                     month: days_sum / 31,
-                });
+                })
             } else {
-                return Ok(JalaliDate {
+                Ok(JalaliDate {
                     day: days_sum % 31,
                     year: jalali_year,
                     month: (days_sum / 31) + 1,
-                });
+                })
             }
         } else {
             let days_sum = days_sum - 186;
             if days_sum % 30 == 0 {
-                return Ok(JalaliDate {
+                Ok(JalaliDate {
                     day: 30,
                     year: jalali_year,
                     month: (days_sum / 30) + 6,
-                });
+                })
             } else {
-                return Ok(JalaliDate {
+                Ok(JalaliDate {
                     day: days_sum % 30,
                     year: jalali_year,
                     month: (days_sum / 30) + 7,
-                });
+                })
             }
         }
     }
@@ -79,16 +79,16 @@ fn dey_jan_diff(year: u32) -> u32 {
         return 11;
     }
 
-    return 10;
+    10
 }
 
 fn year_is_leap(gregorian_year: u32) -> bool {
-    return ((gregorian_year % 100) != 0 && (gregorian_year % 4) == 0)
-        || ((gregorian_year % 100) == 0 && (gregorian_year % 400) == 0);
+    ((gregorian_year % 100) != 0 && (gregorian_year % 4) == 0)
+        || ((gregorian_year % 100) == 0 && (gregorian_year % 400) == 0)
 }
 
-static gregorian_months: [u32; 12] = [30, 31, 30, 31, 31, 30, 31, 30, 31, 31, 28, 31];
-static gregorian_month_leap: [u32; 12] = [30, 31, 30, 31, 31, 30, 31, 30, 31, 31, 29, 31];
+static GREGORIAN_MONTHS: [u32; 12] = [30, 31, 30, 31, 31, 30, 31, 30, 31, 31, 28, 31];
+static GREGORIAN_MONTH_LEAP: [u32; 12] = [30, 31, 30, 31, 31, 30, 31, 30, 31, 31, 29, 31];
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, PartialOrd, Ord)]
 pub struct GregorianDate {
@@ -105,16 +105,14 @@ pub fn convert_jalali_to_gregorian(
     day: u32,
 ) -> crate::Result<GregorianDate> {
     let mut gregorian_year = year + 621;
-    let mut gregorian_day_of_month = 0;
-    let mut gregorian_month = 0;
+    let gregorian_day_of_month;
+    let gregorian_month;
     let march_day_diff = if year_is_leap(gregorian_year) { 12 } else { 11 };
-    let mut day_count = 0;
-
-    if (1..=6).contains(&month) {
-        day_count = (month - 1) * 31 + day;
+    let day_count = if (1..=6).contains(&month) {
+        (month - 1) * 31 + day
     } else {
-        day_count = (6 * 31) + (month - 7) * 30 + day;
-    }
+        (6 * 31) + (month - 7) * 30 + day
+    };
 
     if day_count < march_day_diff {
         gregorian_day_of_month = day_count + (31 - march_day_diff);
@@ -124,13 +122,13 @@ pub fn convert_jalali_to_gregorian(
         let mut i = 0;
 
         if year_is_leap(gregorian_year + 1) {
-            while remain_days > gregorian_months[i] {
-                remain_days -= gregorian_month_leap[i];
+            while remain_days > GREGORIAN_MONTHS[i] {
+                remain_days -= GREGORIAN_MONTH_LEAP[i];
                 i += 1;
             }
         } else {
-            while remain_days > gregorian_months[i] {
-                remain_days -= gregorian_months[i];
+            while remain_days > GREGORIAN_MONTHS[i] {
+                remain_days -= GREGORIAN_MONTHS[i];
                 i += 1;
             }
         }

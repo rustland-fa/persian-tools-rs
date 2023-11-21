@@ -47,7 +47,7 @@ pub trait LandlineNumber: AsRef<str> {
     /// Get province of the landline number.
     fn get_province_from_landline_number(&self) -> crate::Result<Option<IranProvince>> {
         self.get_prefix_landline_number().map(|p| {
-            PROVINCES.iter().find_map(|(k, v)| {
+            PROVINCES.into_iter().find_map(|(k, v)| {
                 if v.prefix_phone == p {
                     Some(IranProvince::from_str(k).unwrap())
                 } else {

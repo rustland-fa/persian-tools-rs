@@ -5,7 +5,7 @@ use crate::utils::*;
 
 /// List of Iranian mobile operators.
 // in future phf crate if support enums as key we must replace str with enum
-pub static IRAN_MOBILE_OPERATORS: FixedMap<&str, &[&str]> = create_fixed_map! {
+pub static IRAN_MOBILE_OPERATORS: phf::Map<&str, &[&str]> = phf::phf_map! {
     "MCI" => {
         &[
             "0910", "0911", "0912", "0913", "0914", "0915", "0916", "0917", "0918", "0919",
@@ -99,7 +99,7 @@ pub trait MobileNumber: AsRef<str> {
         let number = format!("0{}", &text[skip..]);
 
         IRAN_MOBILE_OPERATORS
-            .iter()
+            .into_iter()
             .find_map(|(k, v)| {
                 v.iter()
                     .any(|x| x == &&number[..x.len()])

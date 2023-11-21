@@ -14,7 +14,7 @@ pub trait ShebaNumber: AsRef<str> {
 
         let digits = self.as_ref();
         SHEBA_CODE_TABLE
-            .get(&&digits[4..7])
+            .get(&digits[4..7])
             .map(|sc| sc.process(digits))
     }
 

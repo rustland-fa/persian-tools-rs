@@ -74,7 +74,7 @@ pub trait Digit: AsRef<str> {
 impl_trait_for_string_types!(Digit);
 
 /// The multipliers of the persian number system, up to a billion.
-pub static MULTIPLIERS: FixedMap<&str, u32> = create_fixed_map! {
+pub static MULTIPLIERS: phf::Map<&str, u32> = phf::phf_map! {
     "هزار" => 1_000,
     "میلیون" => 1_000_000,
     "میلیارد" => 1_000_000_000,
@@ -86,7 +86,7 @@ pub static MULTIPLIERS: FixedMap<&str, u32> = create_fixed_map! {
 /// Includes [1-20], [30, 40, ..., 100], and [100, 200, ..., 900]
 // TODO: probably move to another file, too much bloat here.
 // TOOD: Is it 'nohsad' or 'noh sad'? 'haftsad or 'haft sad'?
-pub static FACE_VALUE: FixedMap<&str, u16> = create_fixed_map! {
+pub static FACE_VALUE: phf::Map<&str, u16> = phf::phf_map! {
     "صفر" => 0,
     "یک" => 1,
     "دو" => 2,
@@ -136,9 +136,9 @@ impl TryFrom<&str> for TokenType {
     type Error = &'static str;
 
     fn try_from(token: &str) -> Result<Self, Self::Error> {
-        if let Some(v) = FACE_VALUE.get(&token) {
+        if let Some(v) = FACE_VALUE.get(token) {
             Ok(TokenType::FaceValue(*v))
-        } else if let Some(m) = MULTIPLIERS.get(&token) {
+        } else if let Some(m) = MULTIPLIERS.get(token) {
             Ok(TokenType::Multiplier(*m))
         } else {
             Err("Unsupported token")

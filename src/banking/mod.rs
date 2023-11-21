@@ -40,7 +40,8 @@ pub trait Banking: AsRef<str> {
         let number = self.as_ref();
         number.is_valid_bank_card_number().then(|| {
             BANK_CODE_TABLE
-                .get_bank_name_from_code(&number[0..6])
+                .get(&number[0..6])
+                .map(|bc| bc.name)
                 .unwrap()
         })
     }

@@ -1,5 +1,3 @@
-use crate::utils::{create_fixed_map, FixedMap};
-
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ShebaAccountNumber {
     pub normal: String,
@@ -27,7 +25,7 @@ impl ShebaInfo {
     }
 }
 
-pub static SHEBA_CODE_TABLE: FixedMap<&str, ShebaInfo> = create_fixed_map! {
+pub static SHEBA_CODE_TABLE: phf::Map<&str, ShebaInfo> = phf::phf_map! {
     "010" => ShebaInfo{
         code: "010",
         nickname: "central-bank",
