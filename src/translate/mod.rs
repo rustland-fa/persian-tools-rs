@@ -93,7 +93,7 @@ pub trait Translate: AsRef<str> {
 impl_trait_for_string_types!(Translate);
 
 #[cfg(test)]
-mod translate_test {
+mod test {
     use super::{Language, Translate};
 
     #[test]

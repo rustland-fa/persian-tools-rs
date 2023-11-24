@@ -118,3 +118,52 @@ impl FromStr for MobileNumber {
         Ok(Self(s[skip..].parse::<u64>().map_err(|e| e.to_string())?))
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use std::str::FromStr;
+
+    use super::*;
+
+    #[test]
+    fn is_valid_mobile_number_test() {
+        assert!(MobileNumber::from_str("09398254166").is_ok());
+        assert!(MobileNumber::try_from(9398254166).is_ok());
+        assert!(MobileNumber::from_str("+989398254166").is_ok());
+        assert!(MobileNumber::try_from(989398254166).is_ok());
+        assert!(MobileNumber::from_str("+98939825416621121121122133313").is_err());
+    }
+
+    #[test]
+    fn get_operator_name_from_mobile_number_test() {
+        assert_eq!(
+            MobileNumber::from_str("09324341133")
+                .unwrap()
+                .get_operator_name()
+                .unwrap(),
+            IranMobileOperator::Taliya
+        );
+        assert_eq!(
+            MobileNumber::from_str("+989324341133")
+                .unwrap()
+                .get_operator_name()
+                .unwrap(),
+            IranMobileOperator::Taliya
+        );
+        assert_eq!(
+            MobileNumber::from_str("+989134341133")
+                .unwrap()
+                .get_operator_name()
+                .unwrap(),
+            IranMobileOperator::MCI
+        );
+        assert_eq!(
+            MobileNumber::from_str("+989999048230")
+                .unwrap()
+                .get_operator_name()
+                .unwrap(),
+            IranMobileOperator::SamanTel
+        );
+        assert!(MobileNumber::from_str("+98999999999").is_err());
+    }
+}

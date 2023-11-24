@@ -61,3 +61,52 @@ impl FromStr for LandlineNumber {
         Ok(Self(s[skip..].parse::<u64>().map_err(|e| e.to_string())?))
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn is_valid_landline_number_test() {
+        assert!(LandlineNumber::from_str("03434144188").is_ok());
+        assert!(LandlineNumber::from_str("0343414418").is_err());
+        assert!(LandlineNumber::from_str("034341441810000000000000000023323232").is_err());
+    }
+
+    #[test]
+    fn get_prefix_landline_number_test() {
+        assert_eq!(
+            LandlineNumber::from_str("03498254166")
+                .unwrap()
+                .get_prefix_landline_number(),
+            34
+        );
+        assert_eq!(
+            LandlineNumber::from_str("+983498254166")
+                .unwrap()
+                .get_prefix_landline_number(),
+            34
+        );
+        assert!(LandlineNumber::from_str("+98").is_err());
+    }
+
+    #[test]
+    fn get_province_from_landline_number_test() {
+        assert_eq!(
+            LandlineNumber::from_str("03498254166")
+                .unwrap()
+                .get_province()
+                .unwrap(),
+            IranProvince::Kerman
+        );
+        assert_eq!(
+            LandlineNumber::from_str("+982198254166")
+                .unwrap()
+                .get_province()
+                .unwrap(),
+            IranProvince::Tehran
+        );
+        assert!(LandlineNumber::from_str("+98999999999").is_err());
+    }
+}
+
