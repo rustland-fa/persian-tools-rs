@@ -12,7 +12,6 @@ pub static MULTIPLIERS: phf::Map<&str, u32> = phf::phf_map! {
 /// smaller parts.
 ///
 /// Includes [1-20], [30, 40, ..., 100], and [100, 200, ..., 900]
-// TODO: probably move to another file, too much bloat here.
 // TOOD: Is it 'nohsad' or 'noh sad'? 'haftsad or 'haft sad'?
 pub static FACE_VALUE: phf::Map<&str, u16> = phf::phf_map! {
     "صفر" => 0,
