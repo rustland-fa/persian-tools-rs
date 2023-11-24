@@ -1,5 +1,9 @@
+use std::str::Chars;
+
 use super::Banking;
-use crate::{digit::Digit, utils::impl_trait_for_string_types};
+use crate::digit::Digit;
+
+static CARD_SEPERATORS: [char; 4] = ['-', '_', '*', '.'];
 
 /// Card number information
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -58,63 +62,86 @@ impl Default for ExtractCardNumberOptions {
     }
 }
 
-pub trait ExtractCardNumber: AsRef<str> {
-    /// Extract all the card numbers.
-    fn extract_card_numbers(&self, options: ExtractCardNumberOptions) -> Vec<CardNumber> {
-        let digits = self.as_ref();
-        let mut result = Vec::new();
+pub struct CardNumberExtractor<'a> {
+    chars: Chars<'a>,
+    index: usize,
+    options: ExtractCardNumberOptions,
+}
 
+impl<'a> CardNumberExtractor<'a> {
+    pub fn new(s: &'a str, options: ExtractCardNumberOptions) -> Self {
+        Self { chars: s.chars(), index: 0, options }
+    }
+
+    /// Collect all card number to a vector
+    pub fn to_vec(self) -> Vec<CardNumber> {
+        self.collect()
+    }
+
+    fn get_next_card(&mut self) -> Option<String> {
         let mut len = 0;
         let mut base = String::with_capacity(20);
-        let mut pure = String::with_capacity(16);
-        for c in digits.chars() {
-            match CharType::new(&c) {
+
+        loop {
+            let ch = self.chars.next()?;
+
+            match CharType::new(&ch) {
                 CharType::Digit => {
-                    base.push(c);
-                    pure.push(c);
+                    base.push(ch);
                     len += 1;
 
-                    // a valid iranian card-number have 16 digits
                     if len == 16 {
-                        if pure.have_non_en_digit() {
-                            // if there is any non english digit replace them with english digits
-                            pure = pure.digits_to_en();
-                        }
-
-                        result.push(CardNumber {
-                            base: base.clone(),
-                            is_valid: options
-                                .check_validation
-                                .then(|| pure.is_valid_bank_card_number()),
-                            bank_name: if options.detect_bank_name {
-                                pure.get_bank_name_from_card_number()
-                            } else {
-                                None
-                            },
-                            pure: pure.clone(),
-                            index: result.len() + 1,
-                        });
-                        // clear buffers and len after we pushed the information to result
-                        base.clear();
-                        pure.clear();
-                        len = 0;
+                        return Some(base);
                     }
-                }
-                CharType::Seperator => base.push(c),
+                },
+                CharType::Seperator => base.push(ch),
                 CharType::Other => {
-                    // clear buffers and len in case of unsupported character
                     base.clear();
-                    pure.clear();
                     len = 0;
-                }
+                },
             }
         }
+    }
+}
 
-        if options.filter_valid_card_numbers {
-            result.retain(|c| c.is_valid.unwrap_or(true));
-        }
+impl<'a> Iterator for CardNumberExtractor<'a> {
+    type Item = CardNumber;
 
-        result
+    fn next(&mut self) -> Option<Self::Item> {
+        let mut is_valid;
+
+        // get card-number, filter the card if needed
+        let (base, pure) = loop {
+            let base = self.get_next_card()?;
+            let mut pure = base.replace(CARD_SEPERATORS, "");
+
+            self.index += 1;
+
+            if pure.have_non_en_digit() {
+                // if there is any non english digit replace them with english digits
+                pure = pure.digits_to_en();
+            }
+            
+            is_valid = self.options.check_validation.then(|| pure.is_valid_bank_card_number());
+
+            if !self.options.filter_valid_card_numbers || is_valid.unwrap_or(true) {
+                break (base, pure);
+            }
+        };
+        
+        let bank_name = if self.options.detect_bank_name {
+            pure.get_bank_name_from_card_number()
+        } else {
+            None
+        };
+
+        Some(CardNumber {
+            base,
+            is_valid,
+            bank_name,
+            pure,
+            index: self.index,
+        })
     }
 }
 
@@ -128,13 +155,11 @@ impl CharType {
     fn new(c: &char) -> Self {
         match c {
             '0'..='9' | '\u{0660}'..='\u{0669}' | '\u{06F0}'..='\u{06F9}' => Self::Digit,
-            '-' | '_' | '*' | '.' => Self::Seperator,
+            c if CARD_SEPERATORS.contains(c) => Self::Seperator,
             _ => Self::Other,
         }
     }
 }
-
-impl_trait_for_string_types!(ExtractCardNumber);
 
 #[cfg(test)]
 mod test {
@@ -188,12 +213,13 @@ mod test {
             create_card!("۵۰۲۲-۲۹۱۰-۷۰۸۷-۳۴۶۶", "5022291070873466", 4),
         ];
 
+        let options = ExtractCardNumberOptions {
+            check_validation: false,
+            ..Default::default()
+        };
         assert_eq!(
             cards,
-            string.extract_card_numbers(ExtractCardNumberOptions {
-                check_validation: false,
-                ..Default::default()
-            })
+            CardNumberExtractor::new(string, options).to_vec()
         );
 
         // Should find and format the Card-Number into Text that includes Persian & English digits
@@ -202,12 +228,13 @@ mod test {
 
             let card = create_card!("۵۰۲۲-2910-7۰۸۷-۳۴۶۶", "5022291070873466", 1);
 
+            let options = ExtractCardNumberOptions {
+                check_validation: false,
+                ..Default::default()
+            };
             assert_eq!(
                 vec![card],
-                string.extract_card_numbers(ExtractCardNumberOptions {
-                    check_validation: false,
-                    ..Default::default()
-                })
+                CardNumberExtractor::new(string, options).to_vec()
             );
         }
 
@@ -219,13 +246,15 @@ mod test {
             create_card!("۵۰۲۲-۲۹۱۰-۷۰۸۷-۳۴۶۶", "5022291070873466", 4, true),
         ];
 
+        let options = ExtractCardNumberOptions {
+            check_validation: true,
+            filter_valid_card_numbers: false,
+            ..Default::default()
+        };
+
         assert_eq!(
             cards,
-            string.extract_card_numbers(ExtractCardNumberOptions {
-                check_validation: true,
-                filter_valid_card_numbers: false,
-                ..Default::default()
-            })
+            CardNumberExtractor::new(string, options).to_vec()
         );
 
         // Should return only valid card-numbers
@@ -235,13 +264,15 @@ mod test {
             create_card!("۵۰۲۲-۲۹۱۰-۷۰۸۷-۳۴۶۶", "5022291070873466", 4, true),
         ];
 
+        let options = ExtractCardNumberOptions {
+            check_validation: true,
+            filter_valid_card_numbers: true,
+            ..Default::default()
+        };
+
         assert_eq!(
             cards,
-            string.extract_card_numbers(ExtractCardNumberOptions {
-                check_validation: true,
-                filter_valid_card_numbers: true,
-                ..Default::default()
-            })
+            CardNumberExtractor::new(string, options).to_vec()
         );
 
         // Should detect Banks number for valid card-numbers
@@ -271,11 +302,7 @@ mod test {
 
         assert_eq!(
             cards,
-            string.extract_card_numbers(ExtractCardNumberOptions {
-                check_validation: true,
-                filter_valid_card_numbers: true,
-                detect_bank_name: true
-            })
+            CardNumberExtractor::new(string, ExtractCardNumberOptions::all()).to_vec(),
         );
     }
 }

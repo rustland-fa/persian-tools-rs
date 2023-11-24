@@ -1,55 +1,53 @@
 use std::str::FromStr;
 use strum::EnumString;
 
-use crate::utils::*;
-
 /// List of Iranian mobile operators.
 // in future phf crate if support enums as key we must replace str with enum
-pub static IRAN_MOBILE_OPERATORS: phf::Map<&str, &[&str]> = phf::phf_map! {
+pub static IRAN_MOBILE_OPERATORS: phf::Map<&str, &[u32]> = phf::phf_map! {
     "MCI" => {
         &[
-            "0910", "0911", "0912", "0913", "0914", "0915", "0916", "0917", "0918", "0919",
-            "0990", "0991", "0992", "0993", "0994",
+            910u32, 911u32, 912u32, 913u32, 914u32, 915u32, 916u32, 917u32, 918u32, 919u32,
+            990u32, 991u32, 992u32, 993u32, 994u32,
         ]
     },
     "Irancell" => {
         &[
-            "0930", "0933", "0935", "0936", "0937", "0938", "0939", "0901", "0902", "0903",
-            "0904", "0905", "0941",
+            930u32, 933u32, 935u32, 936u32, 937u32, 938u32, 939u32, 901u32, 902u32, 903u32,
+            904u32, 905u32, 941u32,
         ]
     },
     "RightTel" => {
-        &["0920", "0921", "0922"]
+        &[920u32, 921u32, 922u32]
     },
     "Taliya" => {
-        &["0932"]
+        &[932u32]
     },
     "MTCE" => {
-    &["0931"]
+    &[931u32]
     },
     "TeleKish" => {
-        &["0934"]
+        &[934u32]
     },
     "ApTel" => {
-        &["099910", "099911", "099913"]
+        &[99910u32, 99911u32, 99913u32]
     },
     "Azartel" => {
-        &["099914"]
+        &[99914u32]
     },
     "SamanTel" => {
-        &["099990", "099999", "099998", "099997", "099996"]
+        &[99990u32, 99999u32, 99998u32, 99997u32, 99996u32]
     },
     "LotusTel" => {
-    &["09990"]
+    &[9990u32]
     },
     "ShatelMobile" => {
-        &["099810", "099811", "099812", "099814", "099815"]
+        &[99810u32, 99811u32, 99812u32, 99814u32, 99815u32]
     },
     "ArianTel" => {
-        &["09998"]
+        &[9998u32]
     },
     "Anarestan" => {
-        &["0994"]
+        &[994u32]
     },
 
 };
@@ -71,42 +69,52 @@ pub enum IranMobileOperator {
     ShatelMobile,
 }
 
-/// A trait helper to work with mobile numbers.
-pub trait MobileNumber: AsRef<str> {
-    /// Check if the mobile number is valid.
-    fn is_valid_mobile_number(&self) -> bool {
-        let text = self.as_ref();
-        let skip = super::get_num_skip(text);
+pub struct MobileNumber(u64);
 
-        if text.len() - skip != 10 {
-            return false;
-        }
-
-        let mut chars = text.chars().skip(skip);
-
-        chars.next().is_some_and(|c| c == '9') && chars.all(|c| c.is_ascii_digit())
-    }
-
+impl MobileNumber {
     /// Get the operator name of the mobile number.
-    fn get_operator_name_from_mobile_number(&self) -> crate::Result<IranMobileOperator> {
-        let text = self.as_ref();
-        let skip = super::get_num_skip(text);
-
-        if text.len() - skip != 10 {
-            return Err("Invalid mobile number".into());
-        }
-
-        let number = format!("0{}", &text[skip..]);
-
+    pub fn get_operator_name(&self) -> Option<IranMobileOperator> {
         IRAN_MOBILE_OPERATORS
             .into_iter()
-            .find_map(|(k, v)| {
-                v.iter()
-                    .any(|x| x == &&number[..x.len()])
-                    .then(|| IranMobileOperator::from_str(k).unwrap())
+            .find_map(|(operator, nums)| {
+                nums.iter()
+                    .any(|n| {
+                        let len = n.checked_ilog10().unwrap_or(0) + 1;
+                        *n as u64 == self.0 / 10u64.pow(10 - len)
+                    })
+                    .then(|| IranMobileOperator::from_str(operator).unwrap())
             })
-            .ok_or("Can't find the operator".into())
     }
 }
 
-impl_trait_for_string_types!(MobileNumber);
+impl TryFrom<u64> for MobileNumber {
+    type Error = String;
+
+    fn try_from(value: u64) -> Result<Self, Self::Error> {
+        let num = super::validate_num(value).ok_or("Invalid Mobile number")?;
+
+        if num / 10u64.pow(9) != 9 {
+            return Err("Invalid Mobile number".into());
+        }
+
+        Ok(Self(value))
+    }
+}
+
+impl FromStr for MobileNumber {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let skip = super::get_num_skip_str(s);
+
+        if s.len() - skip != 10 {
+            return Err("String lenght doesn't match with a Mobile Number".to_owned());
+        }
+
+        if !s[skip..].starts_with('9') {
+            return Err("Invalid number".to_owned());
+        }
+
+        Ok(Self(s[skip..].parse::<u64>().map_err(|e| e.to_string())?))
+    }
+}
