@@ -31,7 +31,10 @@ impl TryFrom<u64> for LandlineNumber {
         let num = super::validate_num(value).ok_or("Invalid Mobile number")?;
 
         let two_num = num / 10u64.pow(8);
-        if !matches!((two_num / 10u64.pow(1), two_num % 10u64.pow(1)), (1..=9, 1..=9)) {
+        if !matches!(
+            (two_num / 10u64.pow(1), two_num % 10u64.pow(1)),
+            (1..=9, 1..=9)
+        ) {
             return Err("Invalid Mobile number".into());
         }
 

@@ -1,6 +1,8 @@
-use crate::{banking::sheba_table::ShebaInfo, utils::impl_trait_for_string_types};
+use crate::utils::impl_trait_for_string_types;
 
-use crate::banking::sheba_table::SHEBA_CODE_TABLE;
+use sheba_table::{SHEBA_CODE_TABLE, ShebaInfo};
+
+mod sheba_table;
 
 pub trait ShebaNumber: AsRef<str> {
     fn is_valid_sheba_code(&self) -> bool {
@@ -49,7 +51,7 @@ impl_trait_for_string_types!(ShebaNumber);
 
 #[cfg(test)]
 mod sheba_code {
-    use crate::banking::sheba_table::{
+    use super::sheba_table::{
         process_parsian, process_pasargad, process_shahr, ShebaAccountNumber,
     };
 

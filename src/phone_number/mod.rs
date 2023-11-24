@@ -21,7 +21,7 @@ fn validate_num(num: u64) -> Option<u64> {
             } else {
                 None
             }
-        },
+        }
         10 => Some(num),
         _ => None,
     }
@@ -52,8 +52,18 @@ mod tests {
 
     #[test]
     fn get_prefix_landline_number_test() {
-        assert_eq!(LandlineNumber::from_str("03498254166").unwrap().get_prefix_landline_number(), 34);
-        assert_eq!(LandlineNumber::from_str("+983498254166").unwrap().get_prefix_landline_number(), 34);
+        assert_eq!(
+            LandlineNumber::from_str("03498254166")
+                .unwrap()
+                .get_prefix_landline_number(),
+            34
+        );
+        assert_eq!(
+            LandlineNumber::from_str("+983498254166")
+                .unwrap()
+                .get_prefix_landline_number(),
+            34
+        );
         assert!(MobileNumber::from_str("+98").is_err());
     }
 
@@ -106,8 +116,6 @@ mod tests {
                 .unwrap(),
             IranMobileOperator::SamanTel
         );
-        assert!(
-            MobileNumber::from_str("+98999999999")
-                .is_err());
+        assert!(MobileNumber::from_str("+98999999999").is_err());
     }
 }

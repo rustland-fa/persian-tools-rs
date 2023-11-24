@@ -1,6 +1,6 @@
-use std::str::Chars;
+use std::str::{Chars, FromStr};
 
-use super::Banking;
+use super::card::BankCardNumber;
 use crate::digit::Digit;
 
 static CARD_SEPERATORS: [char; 4] = ['-', '_', '*', '.'];
@@ -70,7 +70,11 @@ pub struct CardNumberExtractor<'a> {
 
 impl<'a> CardNumberExtractor<'a> {
     pub fn new(s: &'a str, options: ExtractCardNumberOptions) -> Self {
-        Self { chars: s.chars(), index: 0, options }
+        Self {
+            chars: s.chars(),
+            index: 0,
+            options,
+        }
     }
 
     /// Collect all card number to a vector
@@ -93,12 +97,12 @@ impl<'a> CardNumberExtractor<'a> {
                     if len == 16 {
                         return Some(base);
                     }
-                },
+                }
                 CharType::Seperator => base.push(ch),
                 CharType::Other => {
                     base.clear();
                     len = 0;
-                },
+                }
             }
         }
     }
@@ -121,16 +125,19 @@ impl<'a> Iterator for CardNumberExtractor<'a> {
                 // if there is any non english digit replace them with english digits
                 pure = pure.digits_to_en();
             }
-            
-            is_valid = self.options.check_validation.then(|| pure.is_valid_bank_card_number());
+
+            is_valid = self
+                .options
+                .check_validation
+                .then(|| BankCardNumber::from_str(&pure).is_ok());
 
             if !self.options.filter_valid_card_numbers || is_valid.unwrap_or(true) {
                 break (base, pure);
             }
         };
-        
+
         let bank_name = if self.options.detect_bank_name {
-            pure.get_bank_name_from_card_number()
+            BankCardNumber::from_str(&pure).map_or(None, |b| b.get_bank_name())
         } else {
             None
         };
@@ -217,10 +224,7 @@ mod test {
             check_validation: false,
             ..Default::default()
         };
-        assert_eq!(
-            cards,
-            CardNumberExtractor::new(string, options).to_vec()
-        );
+        assert_eq!(cards, CardNumberExtractor::new(string, options).to_vec());
 
         // Should find and format the Card-Number into Text that includes Persian & English digits
         {
@@ -252,10 +256,7 @@ mod test {
             ..Default::default()
         };
 
-        assert_eq!(
-            cards,
-            CardNumberExtractor::new(string, options).to_vec()
-        );
+        assert_eq!(cards, CardNumberExtractor::new(string, options).to_vec());
 
         // Should return only valid card-numbers
         let cards = vec![
@@ -270,10 +271,7 @@ mod test {
             ..Default::default()
         };
 
-        assert_eq!(
-            cards,
-            CardNumberExtractor::new(string, options).to_vec()
-        );
+        assert_eq!(cards, CardNumberExtractor::new(string, options).to_vec());
 
         // Should detect Banks number for valid card-numbers
         let cards = vec![
